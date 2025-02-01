@@ -3,6 +3,7 @@ import NotesCard from '../components/ui/NotesCard';
 import Pagination from '../components/ui/Pagination';
 import { IoAddOutline } from 'react-icons/io5';
 import SingleNote from '../components/SingleNote';
+import Error404 from '../layouts/Error404';
 
 const notes = [
   {
@@ -125,25 +126,36 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <main>
-        <section className="transition-linear w-fit columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3">
-          {notes.map((note) => (
-            <NotesCard
-              key={note._id}
-              title={note.title}
-              date={note.date}
-              content={note.content}
-              tags={note.tags}
-              isPinned={note.isPinned}
-              onEdit={() => handleEditNoteClick(note)} // Pass edit handler
-              onDelete={() => console.log('Delete Note')}
-              onPin={() => console.log('Pin Note')}
-              onClick={() => handleNoteClick(note)}
-            />
-          ))}
-        </section>
-        <Pagination />
-      </main>
+      {notes.length < 1 ? (
+        <Error404
+          message={
+            // isSearch
+            //   ? `Oops no notes found! Create a new note.`
+            //   : `Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember`
+            `Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`
+          }
+        />
+      ) : (
+        <main>
+          <section className="transition-linear w-fit columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3">
+            {notes.map((note) => (
+              <NotesCard
+                key={note._id}
+                title={note.title}
+                date={note.date}
+                content={note.content}
+                tags={note.tags}
+                isPinned={note.isPinned}
+                onEdit={() => handleEditNoteClick(note)} // Pass edit handler
+                onDelete={() => console.log('Delete Note')}
+                onPin={() => console.log('Pin Note')}
+                onClick={() => handleNoteClick(note)}
+              />
+            ))}
+          </section>
+          <Pagination />
+        </main>
+      )}
       <button
         onClick={handleAddNoteClick}
         className="transition-200 fixed bottom-4 right-4 z-50 flex size-12 items-center justify-center rounded-full border border-amber-400 bg-amber-400 text-dark shadow hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-300"
