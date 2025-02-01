@@ -5,15 +5,16 @@
 
   @layer base {
     ::selection {
-      @apply text-light bg-dark;
+      @apply text-amber-100 bg-dark;
     }
 
     * {
       scrollbar-width: thin;
+      scrollbar-color: #fbbf24 #fffbeb;
     }
 
     body {
-      @apply font-body bg-light text-dark;
+      @apply font-body bg-amber-50 text-dark overflow-x-clip;
     }
 
     main,
@@ -57,7 +58,6 @@
   }
 
   @layer components {
-
     .transition-300 {
       @apply transition-all duration-300 ease-linear;
     }
@@ -76,5 +76,21 @@
 
     .overlay {
       @apply absolute inset-0 bg-black/20 z-0 pointer-events-none select-none;
+    }
+
+    .navlink {
+      @apply transition-300 rounded-xl text-center px-4 py-3 text-lg font-normal capitalize group-hover:bg-amber-200 group-hover:tracking-wide group-hover:text-dark;
+    }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+      @apply transition-[background-color] duration-[5000s] delay-0 ease-in-out;
     }
   }
