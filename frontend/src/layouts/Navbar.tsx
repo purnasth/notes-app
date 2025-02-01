@@ -104,7 +104,7 @@ const Navbar = () => {
 
       <div className={`relative`}>
         <div
-          className={`transition-700 fixed inset-0 z-30 ${
+          className={`transition-700 fixed inset-0 z-30 backdrop-blur ${
             isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
           onClick={toggleNav}

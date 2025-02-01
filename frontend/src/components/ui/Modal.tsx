@@ -27,14 +27,14 @@ const Modal = ({ onClose, children }: ModalProps) => {
       onClick={closeWithAnimation}
     >
       <div
-        className={`transition-700 relative w-full max-w-xl transform bg-light p-10 shadow-lg ${
+        className={`transition-700 relative w-full max-w-xl transform bg-white p-10 shadow-lg ${
           showModal ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={closeWithAnimation}
-          className="absolute right-5 top-5 text-xl text-gray-700"
+          className="absolute right-5 top-5 text-xl text-dark"
           aria-label="Close"
         >
           &#x2715;

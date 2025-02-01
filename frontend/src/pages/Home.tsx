@@ -143,14 +143,13 @@ const Home: React.FC = () => {
           ))}
         </section>
         <Pagination />
-
-        <button
-          onClick={handleAddNoteClick}
-          className="transition-200 fixed bottom-4 right-4 flex size-12 items-center justify-center rounded-full border border-amber-400 bg-amber-400 text-dark shadow hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-300"
-        >
-          <IoAddOutline className="scale-125 text-2xl" />
-        </button>
       </main>
+      <button
+        onClick={handleAddNoteClick}
+        className="transition-200 fixed bottom-4 right-4 z-50 flex size-12 items-center justify-center rounded-full border border-amber-400 bg-amber-400 text-dark shadow hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-300"
+      >
+        <IoAddOutline className="scale-125 text-2xl" />
+      </button>
 
       {isModalOpen && (
         <SingleNote

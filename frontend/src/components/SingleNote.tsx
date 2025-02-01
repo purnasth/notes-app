@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TbPinFilled, TbPin } from 'react-icons/tb';
-import { MdDelete, MdEdit } from 'react-icons/md';
+import { MdDeleteOutline, MdEdit } from 'react-icons/md';
 import Modal from './ui/Modal';
 
 interface SingleNoteProps {
@@ -36,7 +36,12 @@ const SingleNote: React.FC<SingleNoteProps> = ({
   const [isNotePinned, setIsNotePinned] = useState(isPinned);
 
   const handleSave = () => {
-    console.log('Note Saved:', { noteTitle, noteContent, noteTags, isNotePinned });
+    console.log('Note Saved:', {
+      noteTitle,
+      noteContent,
+      noteTags,
+      isNotePinned,
+    });
     onClose();
   };
 
@@ -50,7 +55,9 @@ const SingleNote: React.FC<SingleNoteProps> = ({
               <h3 className="font-body text-2xl font-semibold">{title}</h3>
               <p className="text-pretty text-sm text-gray-500">{date}</p>
             </div>
-            <p className="text-pretty text-lg leading-relaxed">{content}</p>
+            <p className="max-h-96 overflow-y-auto text-pretty text-lg leading-relaxed">
+              {content}
+            </p>
             {tags.length > 0 && (
               <div className="flex flex-wrap items-center gap-2">
                 {tags.map((tag, index) => (
@@ -71,34 +78,45 @@ const SingleNote: React.FC<SingleNoteProps> = ({
           <>
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Title</label>
+              <label className="block text-base font-semibold text-dark">
+                Title
+              </label>
               <input
                 type="text"
                 value={noteTitle}
                 onChange={(e) => setNoteTitle(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:outline-none"
+                placeholder='eg. "I have a meeting at 2 PM"'
+                className="mt-1 w-full rounded-md border border-dark/10 p-2 focus:border-amber-400 focus:outline-none"
+                maxLength={60}
               />
             </div>
 
             {/* Content */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Content</label>
+              <label className="block text-base font-semibold text-dark">
+                Content
+              </label>
               <textarea
                 value={noteContent}
+                placeholder='eg. "Meeting with Purna at 2 PM in the conference room."'
                 onChange={(e) => setNoteContent(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:outline-none"
-                rows={5}
+                className="mt-1 max-h-60 w-full rounded-md border border-dark/10 p-2 focus:border-amber-400 focus:outline-none"
+                rows={6}
+                maxLength={375}
               />
             </div>
 
-            {/* Tags */}
+            {/* Categories */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Tags</label>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <label className="block text-base font-semibold text-dark">
+                Categories
+              </label>
+              <div className="mt-2 flex flex-wrap gap-3">
                 {['work', 'personal', 'urgent'].map((tag) => (
-                  <label key={tag} className="flex items-center gap-2">
+                  <label key={tag} className="flex items-center gap-1">
                     <input
                       type="checkbox"
+                      className="accent-amber-400"
                       checked={noteTags.includes(tag)}
                       onChange={(e) => {
                         if (e.target.checked) {
@@ -108,7 +126,9 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                         }
                       }}
                     />
-                    <span className="text-sm">{tag}</span>
+                    <span className="select-none text-sm capitalize">
+                      {tag}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -136,31 +156,33 @@ const SingleNote: React.FC<SingleNoteProps> = ({
               <MdEdit className="text-base" />
             </button>
           )}
-          {!isCreatingNewNote && (
-            <button
-              onClick={onDelete}
-              className="transition-200 flex items-center justify-center gap-1 rounded-full border border-red-400 bg-red-100 px-4 py-2 font-medium text-red-600 hover:bg-red-500 hover:text-white focus:outline-none"
-            >
-              Delete Note
-              <MdDelete className="text-base" />
-            </button>
-          )}
-          <button
-            onClick={() => {
-              setIsNotePinned(!isNotePinned);
-              onPin();
-            }}
-            className={`transition-200 flex items-center justify-center gap-1 rounded-full border-2 border-amber-400 px-4 py-2 font-medium ${
-              isNotePinned ? 'bg-amber-400 text-dark' : 'bg-amber-50 text-amber-400'
-            } hover:bg-amber-100 focus:outline-none`}
-          >
-            {isNotePinned ? (
-              <TbPinFilled className="text-xl" />
-            ) : (
-              <TbPin className="text-xl" />
+          <div className="flex items-center gap-3">
+            {!isCreatingNewNote && (
+              <button
+                onClick={onDelete}
+                className="transition-200 flex aspect-square items-center justify-center gap-1 rounded-full border border-red-400 bg-red-100 p-2 font-medium text-red-600 hover:bg-red-500 hover:text-white focus:outline-none"
+              >
+                <MdDeleteOutline className="text-xl" />
+              </button>
             )}
-            {isNotePinned ? 'Unpin' : 'Pin'}
-          </button>
+            <button
+              onClick={() => {
+                setIsNotePinned(!isNotePinned);
+                onPin();
+              }}
+              className={`transition-200 flex aspect-square items-center justify-center gap-1 rounded-full border-2 border-amber-400 p-2 font-medium ${
+                isNotePinned
+                  ? 'bg-amber-400 text-dark'
+                  : 'bg-amber-50 text-amber-400'
+              } hover:bg-amber-300 hover:text-dark focus:outline-none`}
+            >
+              {isNotePinned ? (
+                <TbPinFilled className="text-xl" />
+              ) : (
+                <TbPin className="text-xl" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </Modal>
