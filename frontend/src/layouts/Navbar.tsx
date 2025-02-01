@@ -1,14 +1,25 @@
 import { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { TbMenu2, TbSortDescending2, TbCategory2 } from 'react-icons/tb';
 import { SiGoogletasks } from 'react-icons/si';
 import { IoMdClose } from 'react-icons/io';
-import { IoSearch } from 'react-icons/io5';
+// import { IoSearch } from 'react-icons/io5';
+import { getInitials } from '../utils/helper';
+import SearchBar from '../components/ui/SearchBar';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
+
+  const location = useLocation();
+
+  const navigate = useNavigate();
+
+  const onLogOut = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,17 +65,20 @@ const Navbar = () => {
             >
               Login
             </Link> */}
-            <div className="relative max-w-3xl">
+            {/* <div className="relative max-w-3xl">
               <IoSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-dark" />
               <input
                 type="text"
                 placeholder="Search your notes .."
                 className="w-96 rounded-full bg-transparent py-4 pl-12 pr-4 text-base font-normal text-dark outline outline-2 -outline-offset-[6px] outline-amber-400 placeholder:text-base placeholder:font-light placeholder:text-dark focus:outline focus:outline-2 focus:-outline-offset-4 focus:outline-amber-400"
               />
-            </div>
+            </div> */}
 
+            <div className="flex w-full min-w-96">
+              <SearchBar />
+            </div>
             <button
-              className="group flex h-12 items-center gap-4 rounded-full border border-amber-400 bg-amber-400 py-1 pl-5 pr-1.5"
+              className="group flex h-12 items-center gap-4 rounded-full border border-amber-400 bg-amber-400 py-1 pl-5 pr-1.5 text-dark"
               onClick={toggleNav}
             >
               {isOpen ? (
@@ -73,12 +87,15 @@ const Navbar = () => {
                 <TbMenu2 className="scale-150 text-base" />
               )}
 
-              <div className="user-profile rounded-full border border-dark/40">
-                <img
+              <div className="user-profile rounded-full border border-amber-100">
+                {/* <img
                   src="https://www.purnashrestha.com.np/assets/hero-DDSQy-9a.avif"
                   alt="profile"
                   className="transition-300 size-10 scale-[0.95] rounded-full object-cover shadow group-hover:scale-100"
-                />
+                /> */}
+                <span className="transition-300 flex size-10 scale-[0.95] items-center justify-center rounded-full border border-amber-100 bg-amber-100 p-2 text-xl font-bold text-amber-500 shadow group-hover:scale-100">
+                  {getInitials('Purna Shrestha')}
+                </span>
               </div>
             </button>
           </div>
@@ -87,7 +104,7 @@ const Navbar = () => {
 
       <div className={`relative`}>
         <div
-          className={`transition-700 fixed inset-0 z-30 ${
+          className={`transition-700 fixed inset-0 z-30 backdrop-blur ${
             isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
           onClick={toggleNav}
@@ -99,15 +116,6 @@ const Navbar = () => {
           } ${visible ? 'opacity-100' : '-translate-y-[150%]'} z-30`}
         >
           <div className="space-y-4">
-            {/* <div className="relative max-w-3xl">
-              <IoSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-dark" />
-              <input
-                type="text"
-                placeholder="Search your notes .."
-                className="w-full rounded-full bg-transparent py-4 pl-12 pr-4 text-base font-normal text-dark outline outline-2 -outline-offset-[6px] outline-amber-400 placeholder:text-base placeholder:font-light placeholder:text-dark focus:outline focus:outline-2 focus:-outline-offset-4 focus:outline-amber-400"
-              />
-            </div> */}
-
             <ul className="space-y-2">
               <li className="group">
                 <NavLink
@@ -131,6 +139,7 @@ const Navbar = () => {
               </li>
             </ul>
 
+            <SearchBar />
             <hr />
 
             <div className="p-2">
@@ -244,15 +253,19 @@ const Navbar = () => {
             <hr />
 
             <div className="user-profile flex items-center gap-4 p-2">
-              <img
+              {/* <img
                 src="https://www.purnashrestha.com.np/assets/hero-DDSQy-9a.avif"
                 alt="profile"
                 className="size-14 rounded-full border object-cover shadow"
-              />
+              /> */}
+              <span className="transition-300 flex size-14 scale-[0.95] items-center justify-center rounded-full border border-amber-500 bg-amber-100 p-2 text-xl font-bold text-amber-500 outline outline-1 outline-offset-2 outline-amber-500/40 group-hover:scale-100">
+                {getInitials('Purna Shrestha')}
+              </span>
               <div className="text-dark">
                 <h3 className="text-base">Purna Shrestha</h3>
                 <button
                   type="button"
+                  onClick={onLogOut}
                   className="transition-300 text-base font-medium text-amber-400 hover:text-amber-400 hover:underline"
                 >
                   Logout
