@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NotesCard from '../components/ui/NotesCard';
 import Pagination from '../components/ui/Pagination';
+import { IoAddOutline } from 'react-icons/io5';
+import SingleNote from '../components/SingleNote';
 
 const notes = [
   {
@@ -85,8 +87,42 @@ const notes = [
     isPinned: false,
   },
 ];
-
 const Home: React.FC = () => {
+  const [selectedNote, setSelectedNote] = useState<(typeof notes)[0] | null>(
+    null,
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreatingNewNote, setIsCreatingNewNote] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // New state for edit mode
+
+  const handleNoteClick = (note: (typeof notes)[0]) => {
+    setSelectedNote(note);
+    setIsModalOpen(true);
+    setIsCreatingNewNote(false);
+    setIsEditing(false); // Default to view mode
+  };
+
+  const handleAddNoteClick = () => {
+    setSelectedNote(null);
+    setIsModalOpen(true);
+    setIsCreatingNewNote(true);
+    setIsEditing(false); // Not in edit mode
+  };
+
+  const handleEditNoteClick = (note: (typeof notes)[0]) => {
+    setSelectedNote(note);
+    setIsModalOpen(true);
+    setIsCreatingNewNote(false);
+    setIsEditing(true); // Enable edit mode
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedNote(null);
+    setIsCreatingNewNote(false);
+    setIsEditing(false); // Reset edit mode
+  };
+
   return (
     <>
       <main>
@@ -99,14 +135,38 @@ const Home: React.FC = () => {
               content={note.content}
               tags={note.tags}
               isPinned={note.isPinned}
-              onEdit={() => console.log('Edit Note')}
+              onEdit={() => handleEditNoteClick(note)} // Pass edit handler
               onDelete={() => console.log('Delete Note')}
               onPin={() => console.log('Pin Note')}
+              onClick={() => handleNoteClick(note)}
             />
           ))}
         </section>
         <Pagination />
+
+        <button
+          onClick={handleAddNoteClick}
+          className="transition-200 fixed bottom-4 right-4 flex size-12 items-center justify-center rounded-full border border-amber-400 bg-amber-400 text-dark shadow hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-300"
+        >
+          <IoAddOutline className="scale-125 text-2xl" />
+        </button>
       </main>
+
+      {isModalOpen && (
+        <SingleNote
+          title={selectedNote?.title || ''}
+          date={selectedNote?.date || new Date().toDateString()}
+          content={selectedNote?.content || ''}
+          tags={selectedNote?.tags || []}
+          isPinned={selectedNote?.isPinned || false}
+          onClose={handleCloseModal}
+          onEdit={() => handleEditNoteClick(selectedNote!)}
+          onDelete={() => console.log('Delete Note')}
+          onPin={() => console.log('Pin Note')}
+          isCreatingNewNote={isCreatingNewNote}
+          isEditing={isEditing} // Pass edit mode state
+        />
+      )}
     </>
   );
 };
