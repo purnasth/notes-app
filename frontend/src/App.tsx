@@ -9,12 +9,14 @@ import Home from './pages/Home';
 import RouterToTop from './utils/RouterToTop';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Navbar from './layouts/Navbar';
 
 const App: React.FC = () => {
   return (
     <>
       <Router>
         <RouterToTop />
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

@@ -4,7 +4,7 @@ import PasswordToggle from '../components/PasswordToggle';
 const Login = () => {
   return (
     <>
-      <main className="flex h-screen items-center justify-center bg-white">
+      <main className="flex h-screen items-center justify-center">
         <div className="container max-w-md space-y-8">
           {/* <h2 className="text-center text-2xl font-bold tracking-tight text-dark">
             Login to your account
@@ -24,7 +24,8 @@ const Login = () => {
                   id="email"
                   autoComplete="email"
                   required
-                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
+                  placeholder="example@gmail.com"
+                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:text-dark/40 placeholder:font-light focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
                 />
               </div>
             </div>
