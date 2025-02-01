@@ -5,15 +5,16 @@
 
   @layer base {
     ::selection {
-      @apply text-light bg-dark;
+      @apply text-amber-100 bg-dark;
     }
 
     * {
       scrollbar-width: thin;
+      scrollbar-color: #fbbf24 #fffbeb;
     }
 
     body {
-      @apply font-body bg-amber-50 text-dark;
+      @apply font-body bg-amber-50 text-dark overflow-x-clip;
     }
 
     main,

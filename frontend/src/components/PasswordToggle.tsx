@@ -23,7 +23,7 @@ const PasswordToggle: React.FC<PasswordToggleProps> = ({
       <div className="relative">
         <input
           type={isShowPassword ? 'text' : 'password'}
-          placeholder={placeholder || 'Password'}
+          placeholder={placeholder || 'eg. #dk8bPjX5PW#4'}
           name="password"
           id="password"
           autoComplete="new-password"

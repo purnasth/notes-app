@@ -24,8 +24,8 @@ const Login = () => {
                   id="email"
                   autoComplete="email"
                   required
-                  placeholder="example@gmail.com"
-                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:text-dark/40 placeholder:font-light focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
+                  placeholder="eg. you@example.com"
+                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:font-light placeholder:text-dark/40 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
                 />
               </div>
             </div>

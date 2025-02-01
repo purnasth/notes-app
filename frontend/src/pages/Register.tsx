@@ -4,7 +4,7 @@ import PasswordToggle from '../components/PasswordToggle';
 const Register = () => {
   return (
     <>
-      <main className="flex h-screen items-center justify-center bg-white">
+      <main className="flex h-screen items-center justify-center">
         <div className="container max-w-md space-y-8">
           <form className="space-y-6" action="#" method="POST">
             <div>
@@ -21,7 +21,8 @@ const Register = () => {
                   id="username"
                   autoComplete="username"
                   required
-                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
+                  placeholder="eg. purna_shrestha"
+                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:font-light placeholder:text-dark/40 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
                 />
               </div>
             </div>
@@ -39,7 +40,8 @@ const Register = () => {
                   id="email"
                   autoComplete="email"
                   required
-                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
+                  placeholder="eg. you@example.com"
+                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:font-light placeholder:text-dark/40 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
                 />
               </div>
             </div>
