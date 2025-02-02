@@ -23,11 +23,11 @@ export const registerSchema = yup.object().shape({
 export const noteSchema = yup.object().shape({
   title: yup
     .string()
-    .required('Title is required')
+    .required('Title is required*')
     .max(60, 'Title must be less than 60 characters'),
   content: yup
     .string()
-    .required('Content is required')
+    .required('Content is required*')
     .max(375, 'Content must be less than 375 characters'),
   tags: yup.array().of(yup.string()),
 });
