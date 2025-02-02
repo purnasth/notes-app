@@ -1,61 +1,85 @@
+import { SubmitHandler } from 'react-hook-form';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 import PasswordToggle from '../components/PasswordToggle';
+import useFormValidation from '../hooks/useFormValidation';
+import { registerSchema } from '../utils/validationSchemas';
+import * as yup from 'yup';
+
+// Define the form data type
+type RegisterFormData = yup.InferType<typeof registerSchema>;
+
+// Define form fields
+const formFields = [
+  {
+    name: 'username',
+    type: 'text',
+    label: 'Username',
+    placeholder: 'eg. purna_shrestha',
+  },
+  {
+    name: 'email',
+    type: 'email',
+    label: 'Email address',
+    placeholder: 'eg. you@example.com',
+  },
+  {
+    name: 'password',
+    type: 'password',
+    label: 'Password',
+    placeholder: 'Enter your password',
+    component: PasswordToggle, // Custom component for password field
+  },
+];
 
 const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useFormValidation(registerSchema);
+
+  const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
+    console.log('Form Data:', data);
+    toast.success('Registration successful!');
+  };
+
   return (
     <>
       <main className="flex h-screen items-center justify-center">
         <div className="container max-w-md space-y-8">
-          <form className="space-y-6" action="#" method="POST">
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-base font-medium text-dark"
-              >
-                Username
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  autoComplete="username"
-                  required
-                  placeholder="eg. purna_shrestha"
-                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:font-light placeholder:text-dark/40 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
-                />
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            {formFields.map((field) => (
+              <div key={field.name}>
+                <label
+                  htmlFor={field.name}
+                  className={`block text-base font-normal ${
+                    errors[field.name as keyof RegisterFormData]
+                      ? 'text-red-500'
+                      : 'text-dark'
+                  }`}
+                >
+                  {errors[field.name as keyof RegisterFormData]
+                    ? errors[field.name as keyof RegisterFormData]?.message
+                    : field.label}
+                </label>
+                <div className="mt-2">
+                  {field.component ? (
+                    <field.component register={register} />
+                  ) : (
+                    <input
+                      type={field.type}
+                      id={field.name}
+                      {...register(field.name as keyof RegisterFormData)}
+                      placeholder={field.placeholder}
+                      className={`block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:font-light placeholder:text-dark/40 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg`}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-base font-medium text-dark"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  autoComplete="email"
-                  required
-                  placeholder="eg. you@example.com"
-                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:font-light placeholder:text-dark/40 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-base font-medium text-dark"
-              >
-                Password
-              </label>
-              <div className="mt-2">
-                <PasswordToggle />
-              </div>
-            </div>
+            ))}
+
             <div>
               <button
                 type="submit"
@@ -65,6 +89,7 @@ const Register = () => {
               </button>
             </div>
           </form>
+
           <p className="mt-10 text-center text-base text-dark/80">
             Already have an account?{' '}
             <Link
@@ -76,6 +101,8 @@ const Register = () => {
           </p>
         </div>
       </main>
+
+      <ToastContainer />
     </>
   );
 };
