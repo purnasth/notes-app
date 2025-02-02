@@ -1,16 +1,15 @@
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PasswordToggle from '../components/PasswordToggle';
 import useFormValidation from '../hooks/useFormValidation';
 import { loginSchema } from '../utils/validationSchemas';
 import * as yup from 'yup';
+import { loginUser } from '../utils/api';
 
-// Define the form data type
 type LoginFormData = yup.InferType<typeof loginSchema>;
 
-// Define form fields
 const formFields = [
   {
     name: 'email',
@@ -23,16 +22,37 @@ const formFields = [
     type: 'password',
     label: 'Password',
     placeholder: 'Enter your password',
-    component: PasswordToggle, // Custom component for password field
+    component: PasswordToggle,
   },
 ];
 
 const Login = () => {
-  const { register, handleSubmit, formState: { errors } } = useFormValidation(loginSchema);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useFormValidation(loginSchema);
+  const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
-    console.log('Form Data:', data);
-    toast.success('Login successful!');
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+    try {
+      const response = await loginUser(
+        data.email,
+        data.password,
+        data.remember || false,
+      );
+      toast.success(response.message);
+      navigate('/'); // Redirect to home page after successful login
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error;
+      if (errorMessage.includes('No account')) {
+        toast.error(errorMessage);
+      } else if (errorMessage.includes('Incorrect password')) {
+        toast.error('Wrong password. Try again or click Forgot password');
+      } else {
+        toast.error('Login failed. Please check your credentials');
+      }
+    }
   };
 
   return (
@@ -118,8 +138,6 @@ const Login = () => {
           </p>
         </div>
       </main>
-
-      {/* <ToastContainer /> */}
     </>
   );
 };

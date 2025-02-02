@@ -270,3 +270,25 @@ Response:
 }
 ```
 `Note:` Copy the `JWT token` from the response. You will need for `authenticated` requests.
+
+3. Logout the user
+
+- **POST** `http://localhost:5000/api/auth/logout`
+
+Request headers:
+
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+`Note:` For adding the `bearer token` in the `Authorization` header, open `Auth Type` dropdown and select `Bearer Token` and paste your above copied `JWT token`.
+
+Response:
+
+```json
+{
+    "message": "Logout successful"
+}
+```

@@ -14,7 +14,18 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const user = await createUser(username, email, password);
     res.status(201).json({ message: "User registered successfully", user });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    if (error.code === "23505") {
+      const constraint = error.constraint;
+      if (constraint === "users_username_key") {
+        res.status(400).json({ error: "Username already exists" });
+      } else if (constraint === "users_email_key") {
+        res.status(400).json({ error: "Email already exists" });
+      } else {
+        res.status(400).json({ error: "Duplicate key violation" });
+      }
+    } else {
+      res.status(400).json({ error: error.message });
+    }
   }
 };
 
@@ -23,13 +34,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await findUserByEmail(email);
     if (!user) {
-      res.status(400).json({ error: "Invalid email or password" });
+      res.status(400).json({ error: "No account found with this email" });
       return;
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
-      res.status(400).json({ error: "Invalid email or password" });
+      res.status(400).json({ error: "Incorrect password" });
       return;
     }
 

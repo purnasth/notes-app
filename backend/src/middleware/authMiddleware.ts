@@ -1,7 +1,10 @@
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { findSessionByToken } from "../models/sessionModel";
-import { AuthenticatedRequest } from "./authenticatedRequest";
+
+interface AuthenticatedRequest extends Request {
+  userId?: number;
+}
 
 export const authenticate = async (
   req: AuthenticatedRequest,
