@@ -1,18 +1,6 @@
-
 import { TbPinFilled, TbPin } from 'react-icons/tb';
 import { MdDelete, MdEdit } from 'react-icons/md';
-
-interface NotesCardProps {
-  title: string;
-  date: string;
-  content: string;
-  tags?: string[];
-  isPinned?: boolean;
-  onEdit: () => void;
-  onDelete: () => void;
-  onPin: () => void;
-  onClick: () => void;
-}
+import { NoteProps } from '../../interfaces/types';
 
 const NotesCard = ({
   title,
@@ -24,7 +12,7 @@ const NotesCard = ({
   onDelete,
   onPin,
   onClick,
-}: NotesCardProps) => {
+}: NoteProps) => {
   return (
     <div className="mb-4 overflow-hidden p-2">
       <div

@@ -1,52 +1,81 @@
+import { SubmitHandler } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 import PasswordToggle from '../components/PasswordToggle';
+import useFormValidation from '../hooks/useFormValidation';
+import { loginSchema } from '../utils/validationSchemas';
+import * as yup from 'yup';
+
+// Define the form data type
+type LoginFormData = yup.InferType<typeof loginSchema>;
+
+// Define form fields
+const formFields = [
+  {
+    name: 'email',
+    type: 'email',
+    label: 'Email address',
+    placeholder: 'eg. you@example.com',
+  },
+  {
+    name: 'password',
+    type: 'password',
+    label: 'Password',
+    placeholder: 'Enter your password',
+    component: PasswordToggle, // Custom component for password field
+  },
+];
 
 const Login = () => {
+  const { register, handleSubmit, formState: { errors } } = useFormValidation(loginSchema);
+
+  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
+    console.log('Form Data:', data);
+    toast.success('Login successful!');
+  };
+
   return (
     <>
       <main className="flex h-screen items-center justify-center">
         <div className="container max-w-md space-y-8">
-          {/* <h2 className="text-center text-2xl font-bold tracking-tight text-dark">
-            Login to your account
-          </h2> */}
-          <form className="space-y-6" action="#" method="POST">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-base font-medium text-dark"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  autoComplete="email"
-                  required
-                  placeholder="eg. you@example.com"
-                  className="block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:font-light placeholder:text-dark/40 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between">
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            {formFields.map((field) => (
+              <div key={field.name}>
                 <label
-                  htmlFor="password"
-                  className="block text-base font-medium text-dark"
+                  htmlFor={field.name}
+                  className={`block text-base font-normal ${
+                    errors[field.name as keyof LoginFormData]
+                      ? 'text-red-500'
+                      : 'text-dark'
+                  }`}
                 >
-                  Password
+                  {errors[field.name as keyof LoginFormData]
+                    ? errors[field.name as keyof LoginFormData]?.message
+                    : field.label}
                 </label>
+                <div className="mt-2">
+                  {field.component ? (
+                    <field.component register={register} />
+                  ) : (
+                    <input
+                      type={field.type}
+                      id={field.name}
+                      {...register(field.name as keyof LoginFormData)}
+                      placeholder={field.placeholder}
+                      className={`block w-full rounded-md bg-transparent px-4 py-2.5 text-base font-normal text-dark outline outline-1 -outline-offset-1 outline-amber-500/50 placeholder:font-light placeholder:text-dark/40 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-amber-400 sm:text-lg`}
+                    />
+                  )}
+                </div>
               </div>
-              <div className="mt-2">
-                <PasswordToggle />
-              </div>
-            </div>
+            ))}
+
             <div className="flex items-center justify-between">
               <div>
                 <input
                   type="checkbox"
                   id="remember"
+                  {...register('remember')}
                   className="mr-2 accent-amber-400"
                   defaultChecked
                 />
@@ -67,6 +96,7 @@ const Login = () => {
                 </a>
               </div>
             </div>
+
             <div>
               <button
                 type="submit"
@@ -76,6 +106,7 @@ const Login = () => {
               </button>
             </div>
           </form>
+
           <p className="mt-10 text-center text-base text-dark/80">
             Don't have an account?{' '}
             <Link
@@ -87,6 +118,8 @@ const Login = () => {
           </p>
         </div>
       </main>
+
+      {/* <ToastContainer /> */}
     </>
   );
 };

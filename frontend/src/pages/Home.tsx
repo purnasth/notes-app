@@ -4,8 +4,9 @@ import Pagination from '../components/ui/Pagination';
 import { IoAddOutline } from 'react-icons/io5';
 import SingleNote from '../components/SingleNote';
 import Error404 from '../layouts/Error404';
+import { toast } from 'react-toastify';
 
-const notes = [
+const initialNotes = [
   {
     _id: '1',
     title: 'Interview for Associate Engineer',
@@ -88,52 +89,67 @@ const notes = [
     isPinned: false,
   },
 ];
+
 const Home: React.FC = () => {
+  const [notes, setNotes] = useState(initialNotes);
   const [selectedNote, setSelectedNote] = useState<(typeof notes)[0] | null>(
     null,
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingNewNote, setIsCreatingNewNote] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // New state for edit mode
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleNoteClick = (note: (typeof notes)[0]) => {
     setSelectedNote(note);
     setIsModalOpen(true);
     setIsCreatingNewNote(false);
-    setIsEditing(false); // Default to view mode
+    setIsEditing(false);
   };
 
   const handleAddNoteClick = () => {
     setSelectedNote(null);
     setIsModalOpen(true);
     setIsCreatingNewNote(true);
-    setIsEditing(false); // Not in edit mode
+    setIsEditing(false);
   };
 
   const handleEditNoteClick = (note: (typeof notes)[0]) => {
     setSelectedNote(note);
     setIsModalOpen(true);
     setIsCreatingNewNote(false);
-    setIsEditing(true); // Enable edit mode
+    setIsEditing(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedNote(null);
     setIsCreatingNewNote(false);
-    setIsEditing(false); // Reset edit mode
+    setIsEditing(false);
+  };
+
+  const handleDelete = () => {
+    toast.success('Note deleted successfully!');
+    handleCloseModal();
+  };
+
+  const handlePin = (noteId: string) => {
+    const updatedNotes = notes.map((note) =>
+      note._id === noteId ? { ...note, isPinned: !note.isPinned } : note,
+    );
+    setNotes(updatedNotes);
+    toast.success(
+      updatedNotes.find((note) => note._id === noteId)?.isPinned
+        ? 'Note pinned successfully!'
+        : 'Note unpinned successfully!',
+    );
+    handleCloseModal();
   };
 
   return (
     <>
       {notes.length < 1 ? (
         <Error404
-          message={
-            // isSearch
-            //   ? `Oops no notes found! Create a new note.`
-            //   : `Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember`
-            `Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`
-          }
+          message={`Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`}
         />
       ) : (
         <main>
@@ -146,9 +162,9 @@ const Home: React.FC = () => {
                 content={note.content}
                 tags={note.tags}
                 isPinned={note.isPinned}
-                onEdit={() => handleEditNoteClick(note)} // Pass edit handler
-                onDelete={() => console.log('Delete Note')}
-                onPin={() => console.log('Pin Note')}
+                onEdit={() => handleEditNoteClick(note)}
+                onDelete={handleDelete}
+                onPin={() => handlePin(note._id)}
                 onClick={() => handleNoteClick(note)}
               />
             ))}
@@ -172,10 +188,10 @@ const Home: React.FC = () => {
           isPinned={selectedNote?.isPinned || false}
           onClose={handleCloseModal}
           onEdit={() => handleEditNoteClick(selectedNote!)}
-          onDelete={() => console.log('Delete Note')}
-          onPin={() => console.log('Pin Note')}
+          onDelete={handleDelete}
+          onPin={() => handlePin(selectedNote?._id || '')}
           isCreatingNewNote={isCreatingNewNote}
-          isEditing={isEditing} // Pass edit mode state
+          isEditing={isEditing}
         />
       )}
     </>
