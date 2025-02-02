@@ -1,5 +1,5 @@
 import { SubmitHandler } from 'react-hook-form';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 import PasswordToggle from '../components/PasswordToggle';
@@ -102,7 +102,7 @@ const Register = () => {
         </div>
       </main>
 
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 };
