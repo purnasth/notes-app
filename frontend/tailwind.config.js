@@ -8,7 +8,7 @@ module.exports = {
         light: '#f5f5f5',
       },
       fontFamily: {
-        body: ['"Bricolage Grotesque"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        body: ['"Bricolage Grotesque"', 'Inter', 'DM Sans', 'sans-serif'],
       },
       fontSize: {
         inherit: 'inherit',

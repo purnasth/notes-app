@@ -1,101 +1,110 @@
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@font-face {
+  font-family: "TomatoGrotesk";
+  src: url(./assets/fonts/TomatoGrotesk.woff2) format("woff2");
+  font-weight: 300;
+}
 
 
-  @layer base {
-    ::selection {
-      @apply text-amber-100 bg-dark;
-    }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-    * {
-      scrollbar-width: thin;
-      scrollbar-color: #fbbf24 #fffbeb;
-    }
 
-    body {
-      @apply font-body bg-amber-50 text-dark overflow-x-clip;
-    }
+@layer base {
+  ::selection {
+    @apply text-amber-100 bg-dark;
+  }
 
-    main,
-    section,
-    div {
-      @apply font-body;
-    }
+  * {
+    /* scrollbar-width: thin; */
+    scrollbar-width: thin;
+    scrollbar-color: #fbbf24 #fffbeb;
+  }
 
-    .navlink,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      @apply font-body font-medium;
-    }
+  body {
+    @apply font-body bg-amber-50 text-dark overflow-x-clip;
+  }
 
-    label,
-    a,
-    input,
-    textarea,
-    button,
-    ul,
-    li {
-      @apply font-body font-light;
-    }
+  *,
+  main,
+  section,
+  div {
+    @apply !font-body;
+  }
 
-    p,
-    span {
-      @apply font-body font-light;
-    }
+  .navlink,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-body font-medium;
+  }
 
-    main {
-      @apply relative z-10 px-4 py-12 sm:py-24 md:px-6 md:py-32 lg:py-36 xl:px-6 xl:py-24;
-    }
+  label,
+  a,
+  input,
+  textarea,
+  button,
+  ul,
+  li {
+    @apply font-body font-light;
+  }
 
-    /* section {
+  p,
+  span {
+    @apply font-body font-light;
+  }
+
+  main {
+    @apply relative z-10 px-4 py-12 sm:py-24 md:px-6 md:py-32 lg:py-36 xl:px-6 xl:py-24;
+  }
+
+  /* section {
         @apply py-24 md:py-32 lg:py-48 px-4;
       } */
+}
+
+@layer components {
+
+  .transition-200 {
+    @apply transition-all duration-200 ease-linear;
   }
 
-  @layer components {
-
-    .transition-200 {
-      @apply transition-all duration-200 ease-linear;
-    }
-
-    .transition-300 {
-      @apply transition-all duration-300 ease-linear;
-    }
-
-    .transition-700 {
-      @apply transition-all duration-700 ease-in-out;
-    }
-
-    .transition-1000 {
-      @apply transition-all duration-1000;
-    }
-
-    .navlink {
-      @apply transition-300 inline-flex w-full items-center justify-between pb-2 text-2xl font-bold capitalize text-dark group-hover:font-bold group-hover:tracking-wider;
-    }
-
-    .overlay {
-      @apply absolute inset-0 bg-black/20 z-0 pointer-events-none select-none;
-    }
-
-    .navlink {
-      @apply transition-300 rounded-xl text-center px-4 py-3 text-lg font-normal capitalize group-hover:bg-amber-200 group-hover:tracking-wide group-hover:text-dark;
-    }
-
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    textarea:-webkit-autofill,
-    textarea:-webkit-autofill:hover,
-    textarea:-webkit-autofill:focus,
-    select:-webkit-autofill,
-    select:-webkit-autofill:hover,
-    select:-webkit-autofill:focus {
-      @apply transition-[background-color] duration-[5000s] delay-0 ease-in-out;
-    }
+  .transition-300 {
+    @apply transition-all duration-300 ease-linear;
   }
+
+  .transition-700 {
+    @apply transition-all duration-700 ease-in-out;
+  }
+
+  .transition-1000 {
+    @apply transition-all duration-1000;
+  }
+
+  .navlink {
+    @apply transition-300 inline-flex w-full items-center justify-between pb-2 text-2xl font-bold capitalize text-dark group-hover:font-bold group-hover:tracking-wider;
+  }
+
+  .overlay {
+    @apply absolute inset-0 bg-black/20 z-0 pointer-events-none select-none;
+  }
+
+  .navlink {
+    @apply transition-300 rounded-xl text-center px-4 py-3 text-lg font-normal capitalize group-hover:bg-amber-200 group-hover:tracking-wide group-hover:text-dark;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    @apply transition-[background-color] duration-[5000s] delay-0 ease-in-out;
+  }
+}

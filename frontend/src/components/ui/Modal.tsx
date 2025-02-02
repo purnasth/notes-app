@@ -11,6 +11,10 @@ const Modal = ({ onClose, children }: ModalProps) => {
   useEffect(() => {
     setShowModal(true);
     document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
   }, []);
 
   const closeWithAnimation = () => {

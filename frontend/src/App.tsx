@@ -26,17 +26,17 @@ const App: React.FC = () => {
         </Routes>
 
         <ToastContainer 
-          position="top-center"
-          autoClose={3000}
+          position="top-right"
+          autoClose={2000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
           rtl={false}
-          pauseOnFocusLoss
+          pauseOnFocusLoss={false}
           draggable
           pauseOnHover
           // how to change the color of hte progress bar
-          // toastStyle={{ color: 'red' }}
+          // toastStyle={{ backgroundColor: '#fff', color: '#111111' }}
 
         />
       </Router>
