@@ -3,15 +3,18 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { TbMenu2, TbSortDescending2, TbCategory2 } from 'react-icons/tb';
 import { SiGoogletasks } from 'react-icons/si';
 import { IoMdClose } from 'react-icons/io';
-// import { IoSearch } from 'react-icons/io5';
 import { getInitials } from '../utils/helper';
 import SearchBar from '../components/ui/SearchBar';
 import { handleLogout } from '../utils/api';
+import axios from 'axios';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [user, setUser] = useState<{ username: string; email: string } | null>(
+    null,
+  );
 
   const location = useLocation();
 
@@ -27,15 +30,32 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [prevScrollPos]);
 
+  // Fetch the logged-in user's details
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/me`,
+          {
+            withCredentials: true,
+          },
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
   // Close nav on route change
   useEffect(() => {
     setIsOpen(false);
-    // document.body.style.overflow = 'auto';
   }, [location]);
 
   const toggleNav = () => {
     setIsOpen(!isOpen);
-    // document.body.style.overflow = !isOpen ? 'hidden' : 'auto';
   };
 
   return (
@@ -67,13 +87,8 @@ const Navbar = () => {
               )}
 
               <div className="user-profile rounded-full border border-amber-100">
-                {/* <img
-                  src="https://www.purnashrestha.com.np/assets/hero-DDSQy-9a.avif"
-                  alt="profile"
-                  className="transition-300 size-10 scale-[0.95] rounded-full object-cover shadow group-hover:scale-100"
-                /> */}
                 <span className="transition-300 flex size-10 scale-[0.95] items-center justify-center rounded-full border border-amber-100 bg-amber-100 p-2 text-xl font-bold text-amber-500 shadow group-hover:scale-100">
-                  {getInitials('Purna Shrestha')}
+                  {getInitials(user?.username || 'Guest')}
                 </span>
               </div>
             </button>
@@ -232,16 +247,13 @@ const Navbar = () => {
             <hr />
 
             <div className="user-profile flex items-center gap-4 p-2">
-              {/* <img
-                src="https://www.purnashrestha.com.np/assets/hero-DDSQy-9a.avif"
-                alt="profile"
-                className="size-14 rounded-full border object-cover shadow"
-              /> */}
               <span className="transition-300 flex size-14 scale-[0.95] items-center justify-center rounded-full border border-amber-500 bg-amber-100 p-2 text-xl font-bold text-amber-500 outline outline-1 outline-offset-2 outline-amber-500/40 group-hover:scale-100">
-                {getInitials('Purna Shrestha')}
+                {getInitials(user?.username || 'Guest')}
               </span>
               <div className="text-dark">
-                <h3 className="text-base">Purna Shrestha</h3>
+                <h3 className="text-base capitalize">
+                  {user?.username || 'Guest'}
+                </h3>
                 <button
                   type="button"
                   onClick={handleLogout}
@@ -251,10 +263,6 @@ const Navbar = () => {
                 </button>
               </div>
             </div>
-
-            {/* <Link to="/login" className="navlink inline-block bg-amber-400 hover:bg-amber-50 border-2 hover:text-amber-500 uppercase border-amber-400">
-              Login
-            </Link> */}
           </div>
         </div>
       </div>

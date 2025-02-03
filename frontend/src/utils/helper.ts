@@ -6,7 +6,8 @@ export const validateEmail = (email: string): boolean => {
 export const getInitials = (name: string): string => {
   if (name === null || name === undefined) return '';
 
-  const nameArray = name.split(' ');
+  // const nameArray = name.split(' ');
+  const nameArray = name.split(/[\s_]+/);
   let initials = '';
 
   for (let i = 0; i < Math.min(nameArray.length, 2); i++) {

@@ -1,12 +1,19 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { createUser, findUserByEmail } from "../models/userModel";
+import { createUser, findUserByEmail, findUserById } from "../models/userModel";
 import {
   createSession,
   findSessionByToken,
   deleteSession,
 } from "../models/sessionModel";
+import { capitalize } from "../utils/helper";
+
+declare module "express" {
+  interface Request {
+    userId?: number;
+  }
+}
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { username, email, password } = req.body;
@@ -89,8 +96,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Step 5: Log success and send the response
+    // console.log("Login successful for user:", email);
+    // res.json({ message: `Login successful, Welcome, ${email}`, token });
+
     console.log("Login successful for user:", email);
-    res.json({ message: "Login successful", token }); // Send the JWT token in the response
+    const username = capitalize(user.username);
+    res.json({ message: `Welcome, ${username}!`, token });
   } catch (error: any) {
     // Step 6: Handle errors
     console.error("Login error:", error);
@@ -107,4 +118,34 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     res.clearCookie("session_token");
   }
   res.json({ message: "Logout successful" });
+};
+
+export const getCurrentUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.userId; // Extracted from the JWT token in the auth middleware
+    if (!userId) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    const user = await findUserById(userId);
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // Return user details (excluding sensitive data like password_hash)
+    res.json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      created_at: user.created_at,
+    });
+  } catch (error: any) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };

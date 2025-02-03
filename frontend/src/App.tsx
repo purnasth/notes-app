@@ -9,7 +9,7 @@ import Home from './pages/Home';
 import RouterToTop from './utils/RouterToTop';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Navbar from './layouts/Navbar';
+// import Navbar from './layouts/Navbar';
 import { ToastContainer } from 'react-toastify';
 
 // Check if the user is authenticated
@@ -26,12 +26,20 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   return children;
 };
 
+// Public Route Component
+const PublicRoute = ({ children }: { children: JSX.Element }) => {
+  if (isAuthenticated()) {
+    return <Navigate to="/" />;
+  }
+  return children;
+};
+
 const App: React.FC = () => {
   return (
     <>
       <Router>
         <RouterToTop />
-        <Navbar />
+        {/* <Navbar /> */}
         <Routes>
           <Route
             path="/"
@@ -41,8 +49,23 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+          <Route path="/signup" element={<Navigate to="/register" />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 

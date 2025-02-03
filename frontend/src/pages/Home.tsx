@@ -5,6 +5,7 @@ import { IoAddOutline } from 'react-icons/io5';
 import SingleNote from '../components/SingleNote';
 import Error404 from '../layouts/Error404';
 import { toast } from 'react-toastify';
+import Navbar from '../layouts/Navbar';
 
 const initialNotes = [
   {
@@ -147,6 +148,7 @@ const Home: React.FC = () => {
 
   return (
     <>
+      <Navbar />
       {notes.length < 1 ? (
         <Error404
           message={`Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`}
