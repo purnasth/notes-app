@@ -396,3 +396,202 @@ Response:
   }
 ]
 ```
+
+--- 
+
+6. Get all notes
+
+- **GET** `http://localhost:5000/api/notes`
+- **Purpose:** Fetch all notes from the database.
+
+Request headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT_TOKEN>"
+}
+
+`Note:` For adding the `bearer token` in the `Authorization` header, open `Auth Type` dropdown and select `Bearer Token` and paste your above copied `JWT token`.
+
+Response:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Test Note",
+    "content": "This is a test note",
+    "categories": [
+        "work",
+        "personal"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  },
+  {
+    "id": 2,
+    "title": "Another Note",
+    "content": "This is another note",
+    "categories": [
+        "work"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": true,
+    "user_id": 2
+  }
+]
+```
+
+2. Create a new note
+
+- **POST** `http://localhost:5000/api/notes`
+- **Purpose:** Create a new note in the database.
+
+Request body:
+
+```json
+{
+  "title": "New Note",
+  "content": "This is a new note",
+  "categories": ["work"]
+}
+```
+
+Request headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT_TOKEN>"
+}
+
+`Note:` For adding the `bearer token` in the `Authorization` header, open `Auth Type` dropdown and select `Bearer Token` and paste your above copied `JWT token`.
+
+Response:
+
+```json
+{
+    "id": 3,
+    "title": "New Note",
+    "content": "This is a new note",
+    "categories": [
+        "work"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+}
+```
+
+3. Update a note
+
+- **PUT** `http://localhost:5000/api/notes/:id`
+- **Purpose:** Update an existing note in the database.
+
+Request body:
+
+```json
+{
+  "title": "Updated Note Title: from CRUD update",
+  "content": "This is the updated content",
+  "categories": ["work", "CRUD"]
+}
+```
+
+Request headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT_TOKEN>"
+}
+```
+
+Response:
+
+```json
+{
+    "id": 3,
+    "title": "Updated Note Title: from CRUD update",
+    "content": "This is the updated content",
+    "categories": [
+        "work",
+        "CRUD"
+    ],
+    "created_at": "2025-02-03T20:14:28.460Z",
+    "modified_at": "2025-02-03T20:18:54.365Z",
+    "is_pinned": false,
+    "user_id": 2
+}
+```
+
+4. Delete a note
+
+- **DELETE** `http://localhost:5000/api/notes/:id`
+- **Purpose:** Delete an existing note from the database.
+
+Request headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT_TOKEN>"
+}
+```
+
+Response:
+
+- Status: `204 No Content`
+- Body: No content(empty response)
+
+5. Toggle pin status of a note
+
+- **PUT** `http://localhost:5000/api/notes/:id/pin`
+- **Purpose:** Toggle the pin status of a note.
+
+Request headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT_TOKEN>"
+}
+```
+
+Response:
+
+- Status: `200 OK`
+
+```json
+{
+    "id": 3,
+    "title": "Updated Note Title: from CRUD update",
+    "content": "This is the updated content",
+    "categories": [
+        "work",
+        "CRUD"
+    ],
+    "created_at": "2025-02-03T20:14:28.460Z",
+    "modified_at": "2025-02-03T20:18:54.365Z",
+    "is_pinned": true,
+    "user_id": 2
+}
+```
+
+6. Error Scenarios
+
+- a. Unauthorized access (Missing or invalid token)
+  - **Status**: `401 Unauthorized`
+  - **Response**: `{"error": "Unauthorized"}`
+
+- b. Note not found (Invalid note ID)
+  - **Status**: `404 Not Found`
+  - **Response**: `{"error": "Note not found"}`
+
+- c. Invalid request (Missing or invalid request body)
+  - **Status**: `400 Bad Request`
+  - **Response**: `{"error": "Missing required fields: title, content"}`
+
+- d. Internal server error (Database error)
+  - **Status**: `500 Internal Server Error`
+  - **Response**: `{"error": "Internal server error"}`
