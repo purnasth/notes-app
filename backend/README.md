@@ -73,6 +73,31 @@ Create the folder structure:
 └── tsconfig.json
 ```
 
+<!-- ```
+📂 backend/
+├── 📂 src/
+│   │── 📂 config/
+│   │    └── db.ts 
+│   │── 📂 controllers/
+│   │    └── authController.ts
+│   │── 📂 middleware/
+│   │    ├── authMiddleware.ts
+│   │    └── errorHandler.ts
+│   │── 📂 models/
+│   │    ├── sessionModel.ts
+│   │    └── userModel.ts
+│   │── 📂 routes/
+│   │    └── authRoutes.ts
+│   │── 📂 utils/
+│   │    └── helper.ts
+│   └── index.ts
+├── .env
+├── .gitignore
+├── package.json
+├── README.md
+└── tsconfig.json
+``` -->
+
 `Note:` The **src/** directory contains subdirectories for controllers, models, routes, and utilities. The **config/** directory will store configuration files. The **index.ts** file will be the entry point for the application.
 
 - Add `.env` file with the following environment variables:
