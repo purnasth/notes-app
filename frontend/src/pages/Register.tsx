@@ -1,16 +1,15 @@
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PasswordToggle from '../components/PasswordToggle';
 import useFormValidation from '../hooks/useFormValidation';
 import { registerSchema } from '../utils/validationSchemas';
 import * as yup from 'yup';
+import { registerUser } from '../utils/api';
 
-// Define the form data type
 type RegisterFormData = yup.InferType<typeof registerSchema>;
 
-// Define form fields
 const formFields = [
   {
     name: 'username',
@@ -29,7 +28,7 @@ const formFields = [
     type: 'password',
     label: 'Password',
     placeholder: 'Enter your password',
-    component: PasswordToggle, // Custom component for password field
+    component: PasswordToggle,
   },
 ];
 
@@ -39,10 +38,25 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useFormValidation(registerSchema);
+  const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
-    console.log('Form Data:', data);
-    toast.success('Registration successful!');
+  const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
+    try {
+      const response = await registerUser(
+        data.username,
+        data.email,
+        data.password,
+      );
+      toast.success(response.message);
+      navigate('/login'); // Redirect to login page after successful registration
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error;
+      if (errorMessage.includes('already exists')) {
+        toast.error(errorMessage);
+      } else {
+        toast.error('Registration failed. Please check your information');
+      }
+    }
   };
 
   return (
@@ -101,8 +115,6 @@ const Register = () => {
           </p>
         </div>
       </main>
-
-      {/* <ToastContainer /> */}
     </>
   );
 };

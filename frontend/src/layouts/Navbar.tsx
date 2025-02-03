@@ -1,25 +1,22 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { TbMenu2, TbSortDescending2, TbCategory2 } from 'react-icons/tb';
 import { SiGoogletasks } from 'react-icons/si';
 import { IoMdClose } from 'react-icons/io';
-// import { IoSearch } from 'react-icons/io5';
 import { getInitials } from '../utils/helper';
 import SearchBar from '../components/ui/SearchBar';
+import { handleLogout } from '../utils/api';
+import axios from 'axios';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [user, setUser] = useState<{ username: string; email: string } | null>(
+    null,
+  );
 
   const location = useLocation();
-
-  const navigate = useNavigate();
-
-  const onLogOut = () => {
-    localStorage.clear();
-    navigate('/login');
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,15 +30,32 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [prevScrollPos]);
 
+  // Fetch the logged-in user's details
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/me`,
+          {
+            withCredentials: true,
+          },
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
   // Close nav on route change
   useEffect(() => {
     setIsOpen(false);
-    // document.body.style.overflow = 'auto';
   }, [location]);
 
   const toggleNav = () => {
     setIsOpen(!isOpen);
-    // document.body.style.overflow = !isOpen ? 'hidden' : 'auto';
   };
 
   return (
@@ -59,21 +73,6 @@ const Navbar = () => {
           </a>
 
           <div className="flex items-center justify-end gap-2">
-            {/* <Link
-              to="/login"
-              className="transition-300 rounded-full border border-amber-400 bg-amber-50 px-6 py-2 font-medium text-amber-500 hover:bg-amber-400 hover:text-dark"
-            >
-              Login
-            </Link> */}
-            {/* <div className="relative max-w-3xl">
-              <IoSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-dark" />
-              <input
-                type="text"
-                placeholder="Search your notes .."
-                className="w-96 rounded-full bg-transparent py-4 pl-12 pr-4 text-base font-normal text-dark outline outline-2 -outline-offset-[6px] outline-amber-400 placeholder:text-base placeholder:font-light placeholder:text-dark focus:outline focus:outline-2 focus:-outline-offset-4 focus:outline-amber-400"
-              />
-            </div> */}
-
             <div className="flex w-full min-w-96">
               <SearchBar />
             </div>
@@ -88,13 +87,8 @@ const Navbar = () => {
               )}
 
               <div className="user-profile rounded-full border border-amber-100">
-                {/* <img
-                  src="https://www.purnashrestha.com.np/assets/hero-DDSQy-9a.avif"
-                  alt="profile"
-                  className="transition-300 size-10 scale-[0.95] rounded-full object-cover shadow group-hover:scale-100"
-                /> */}
                 <span className="transition-300 flex size-10 scale-[0.95] items-center justify-center rounded-full border border-amber-100 bg-amber-100 p-2 text-xl font-bold text-amber-500 shadow group-hover:scale-100">
-                  {getInitials('Purna Shrestha')}
+                  {getInitials(user?.username || 'Guest')}
                 </span>
               </div>
             </button>
@@ -253,29 +247,22 @@ const Navbar = () => {
             <hr />
 
             <div className="user-profile flex items-center gap-4 p-2">
-              {/* <img
-                src="https://www.purnashrestha.com.np/assets/hero-DDSQy-9a.avif"
-                alt="profile"
-                className="size-14 rounded-full border object-cover shadow"
-              /> */}
               <span className="transition-300 flex size-14 scale-[0.95] items-center justify-center rounded-full border border-amber-500 bg-amber-100 p-2 text-xl font-bold text-amber-500 outline outline-1 outline-offset-2 outline-amber-500/40 group-hover:scale-100">
-                {getInitials('Purna Shrestha')}
+                {getInitials(user?.username || 'Guest')}
               </span>
               <div className="text-dark">
-                <h3 className="text-base">Purna Shrestha</h3>
+                <h3 className="text-base capitalize">
+                  {user?.username || 'Guest'}
+                </h3>
                 <button
                   type="button"
-                  onClick={onLogOut}
+                  onClick={handleLogout}
                   className="transition-300 text-base font-medium text-amber-400 hover:text-amber-400 hover:underline"
                 >
                   Logout
                 </button>
               </div>
             </div>
-
-            {/* <Link to="/login" className="navlink inline-block bg-amber-400 hover:bg-amber-50 border-2 hover:text-amber-500 uppercase border-amber-400">
-              Login
-            </Link> */}
           </div>
         </div>
       </div>
