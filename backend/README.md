@@ -165,8 +165,8 @@ CREATE TABLE users (
 -- Create a sessions table for "Remember Me" functionality
 CREATE TABLE sessions (
   id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(id) ON DELETE CASCADE,
-  session_token VARCHAR(255) UNIQUE NOT NULL,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  session_token VARCHAR(255) NOT NULL UNIQUE,
   expires_at TIMESTAMP NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -191,7 +191,18 @@ Verify the tables were created:
 \dt
 ```
 
-You should see `users` and `sessions` in the list.
+You should see both `users` and `sessions` in the list.
+Like this:
+
+```bash
+notes_app=# \dt
+         List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+  public | sessions | table | postgres
+  public | users    | table | postgres
+  (2 rows)
+```
 
 ### 1.3 Create the Database Connection
 
@@ -270,6 +281,18 @@ Response:
 }
 ```
 `Note:` Copy the `JWT token` from the response. You will need for `authenticated` requests.
+
+Here, your expected debugging output should be like this:
+
+```bash
+Creating a new user...
+User registered successfully
+Creating session in the database...
+Session created successfully
+Cookie set successfully
+Login successful for user: you@example.com
+```
+
 
 3. Logout the user
 

@@ -13,11 +13,16 @@ export const createSession = async (
   sessionToken: string,
   expiresAt: Date
 ): Promise<Session> => {
-  const result = await pool.query(
-    "INSERT INTO sessions (user_id, session_token, expires_at) VALUES ($1, $2, $3) RETURNING *",
-    [userId, sessionToken, expiresAt]
-  );
-  return result.rows[0];
+  try {
+    const result = await pool.query(
+      "INSERT INTO sessions (user_id, session_token, expires_at) VALUES ($1, $2, $3) RETURNING *",
+      [userId, sessionToken, expiresAt]
+    );
+    return result.rows[0];
+  } catch (error: any) {
+    console.error('Error creating session:', error);
+    throw new Error("Failed to create session");
+  }
 };
 
 export const findSessionByToken = async (

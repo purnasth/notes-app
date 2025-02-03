@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { TbMenu2, TbSortDescending2, TbCategory2 } from 'react-icons/tb';
 import { SiGoogletasks } from 'react-icons/si';
 import { IoMdClose } from 'react-icons/io';
 // import { IoSearch } from 'react-icons/io5';
 import { getInitials } from '../utils/helper';
 import SearchBar from '../components/ui/SearchBar';
+import { handleLogout } from '../utils/api';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,13 +14,6 @@ const Navbar = () => {
   const [visible, setVisible] = useState(true);
 
   const location = useLocation();
-
-  const navigate = useNavigate();
-
-  const onLogOut = () => {
-    localStorage.clear();
-    navigate('/login');
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,21 +53,6 @@ const Navbar = () => {
           </a>
 
           <div className="flex items-center justify-end gap-2">
-            {/* <Link
-              to="/login"
-              className="transition-300 rounded-full border border-amber-400 bg-amber-50 px-6 py-2 font-medium text-amber-500 hover:bg-amber-400 hover:text-dark"
-            >
-              Login
-            </Link> */}
-            {/* <div className="relative max-w-3xl">
-              <IoSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-dark" />
-              <input
-                type="text"
-                placeholder="Search your notes .."
-                className="w-96 rounded-full bg-transparent py-4 pl-12 pr-4 text-base font-normal text-dark outline outline-2 -outline-offset-[6px] outline-amber-400 placeholder:text-base placeholder:font-light placeholder:text-dark focus:outline focus:outline-2 focus:-outline-offset-4 focus:outline-amber-400"
-              />
-            </div> */}
-
             <div className="flex w-full min-w-96">
               <SearchBar />
             </div>
@@ -265,7 +244,7 @@ const Navbar = () => {
                 <h3 className="text-base">Purna Shrestha</h3>
                 <button
                   type="button"
-                  onClick={onLogOut}
+                  onClick={handleLogout}
                   className="transition-300 text-base font-medium text-amber-400 hover:text-amber-400 hover:underline"
                 >
                   Logout

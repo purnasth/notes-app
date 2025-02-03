@@ -31,42 +31,72 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password, rememberMe } = req.body;
+
   try {
+    // Step 1: Find the user by email
     const user = await findUserByEmail(email);
     if (!user) {
+      console.log("No user found with email:", email);
       res.status(400).json({ error: "No account found with this email" });
       return;
     }
 
+    // Step 2: Validate the password
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
+      console.log("Invalid password for user:", email);
       res.status(400).json({ error: "Incorrect password" });
       return;
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
+    // Step 3: Generate a JWT token
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
+    // Step 4: Handle "Remember Me" functionality
     if (rememberMe) {
+      // Generate a session token
       const sessionToken = jwt.sign(
         { userId: user.id },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         {
-          expiresIn: "7d",
+          expiresIn: "7d", // Session token expires in 7 days
         }
       );
+      console.log("Session token generated:", sessionToken); // Debugging log
+
+      // Set the session expiration date
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+      console.log("Session expires at:", expiresAt); // Debugging log
+
+      // Create a session in the database
+      console.log("Creating session in the database..."); // Debugging log
       await createSession(user.id, sessionToken, expiresAt);
+      console.log("Session created successfully"); // Debugging log
+
+      // Set the session token as an HTTP-only cookie
+      console.log("Setting session token as cookie..."); // Debugging log
       res.cookie("session_token", sessionToken, {
-        httpOnly: true,
-        expires: expiresAt,
+        httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+        expires: expiresAt, // Set the cookie expiration date
       });
+      console.log("Cookie set successfully"); // Debugging log
     }
 
-    res.json({ message: "Login successful", token });
+    // Step 5: Log success and send the response
+    console.log("Login successful for user:", email);
+    res.json({ message: "Login successful", token }); // Send the JWT token in the response
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    // Step 6: Handle errors
+    console.error("Login error:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error. Please try again later." });
   }
 };
 

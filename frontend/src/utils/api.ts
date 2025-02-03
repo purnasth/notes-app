@@ -37,7 +37,12 @@ export const loginUser = async (
   return response.data;
 };
 
-export const logoutUser = async () => {
-  const response = await axios.post(`${API_BASE_URL}/logout`);
-  return response.data;
+export const handleLogout = async () => {
+  try {
+    await axios.post(`${API_BASE_URL}/logout`, {}, { withCredentials: true });
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 };

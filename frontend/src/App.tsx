@@ -12,6 +12,20 @@ import Register from './pages/Register';
 import Navbar from './layouts/Navbar';
 import { ToastContainer } from 'react-toastify';
 
+// Check if the user is authenticated
+const isAuthenticated = () => {
+  const token = localStorage.getItem('token');
+  return !!token;
+};
+
+// Protected Route Component
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" />;
+  }
+  return children;
+};
+
 const App: React.FC = () => {
   return (
     <>
@@ -19,13 +33,20 @@ const App: React.FC = () => {
         <RouterToTop />
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 
-        <ToastContainer 
+        <ToastContainer
           position="top-right"
           autoClose={2000}
           hideProgressBar={false}
@@ -35,9 +56,6 @@ const App: React.FC = () => {
           pauseOnFocusLoss={false}
           draggable
           pauseOnHover
-          // how to change the color of hte progress bar
-          // toastStyle={{ backgroundColor: '#fff', color: '#111111' }}
-
         />
       </Router>
     </>

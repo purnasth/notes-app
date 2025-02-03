@@ -41,8 +41,9 @@ const Login = () => {
         data.password,
         data.remember || false,
       );
+      localStorage.setItem('token', response.token);
       toast.success(response.message);
-      navigate('/'); // Redirect to home page after successful login
+      navigate('/');
     } catch (error: any) {
       const errorMessage = error.response?.data?.error;
       if (errorMessage.includes('No account')) {
