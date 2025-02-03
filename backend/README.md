@@ -315,3 +315,59 @@ Response:
     "message": "Logout successful"
 }
 ```
+
+4. Get the current user
+
+- **GET** `http://localhost:5000/api/auth/me`
+
+Request headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT_TOKEN>"
+}
+
+`Note:` For adding the `bearer token` in the `Authorization` header, open `Auth Type` dropdown and select `Bearer Token` and paste your above copied `JWT token`.
+
+Response:
+
+```json
+{
+    "id": 1,
+    "username": "purna_shrestha",
+    "email": "purna@example.com",
+    "created_at": "2025-02-02T17:00:37.377Z"
+}
+```
+
+5. Fetch all users
+
+- **GET** `http://localhost:5000/api/auth/users`
+
+Request headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT_TOKEN>"
+}
+
+`Note:` For adding the `bearer token` in the `Authorization` header, open `Auth Type` dropdown and select `Bearer Token` and paste your above copied `JWT token`.
+
+Response:
+
+```json
+[
+  {
+    "id": 1,
+    "username": "purna",
+    "email": "purna@gmail.com",
+    "created_at": "2025-02-03T07:38:29.970Z"
+  },
+  {
+    "id": 2,
+    "username": "test",
+    "email": "test@example.com",
+    "created_at": "2025-02-03T07:38:29.970Z"
+  }
+]
+```

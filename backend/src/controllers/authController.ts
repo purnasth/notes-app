@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { createUser, findUserByEmail, findUserById } from "../models/userModel";
+import { createUser, findUserByEmail, findUserById, getAllUsers } from "../models/userModel";
 import {
   createSession,
   findSessionByToken,
@@ -146,6 +146,19 @@ export const getCurrentUser = async (
     });
   } catch (error: any) {
     console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getAllUsersController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const users = await getAllUsers();
+    res.json(users);
+  } catch (error: any) {
+    console.error("Error fetching users:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
