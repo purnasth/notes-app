@@ -11,7 +11,6 @@ import {
   createNote,
   updateNote,
   deleteNote,
-  togglePin,
 } from '../utils/api';
 import { NoteProps } from '../interfaces/types';
 
@@ -168,18 +167,6 @@ const Home: React.FC = () => {
     }
   };
 
-  // Handle pin/unpin
-  const handlePinNote = async (id: string) => {
-    try {
-      const note = await togglePin(id);
-      setNotes(notes.map((n) => (n.id === id ? note : n)));
-      toast.success(note.is_pinned ? 'Note pinned!' : 'Note unpinned!');
-    } catch (error) {
-      toast.error('Failed to toggle pin status');
-    }
-    setIsModalOpen(false);
-  };
-
   const handleNoteClick = (note: (typeof notes)[0]) => {
     setSelectedNote(note);
     setIsModalOpen(true);
@@ -221,6 +208,14 @@ const Home: React.FC = () => {
     handleCloseModal();
   };
 
+  // Sort notes by pinned status and created date
+  const sortedNotes = notes.sort((a, b) => {
+    if (a.isPinned === b.isPinned) {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }
+    return a.isPinned ? -1 : 1;
+  });
+
   return (
     <>
       <Navbar />
@@ -231,7 +226,7 @@ const Home: React.FC = () => {
       ) : (
         <main>
           <section className="transition-linear w-fit columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3">
-            {notes.map((note) => (
+            {sortedNotes.map((note) => (
               <NotesCard
                 key={note.id}
                 id={note.id}
@@ -276,7 +271,8 @@ const Home: React.FC = () => {
             setIsEditing(true);
           }}
           onDelete={() => selectedNote && handleDeleteNote(selectedNote.id)}
-          onPin={() => selectedNote && handlePinNote(selectedNote.id)}
+          // onPin={() => selectedNote && handlePinNote(selectedNote.id)}
+          onPin={() => selectedNote && handlePin(selectedNote.id)}
           isCreatingNewNote={isCreatingNewNote}
           isEditing={isEditing}
           onSubmit={(data) => {

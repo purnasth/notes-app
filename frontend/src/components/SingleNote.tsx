@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// import { TbPinFilled, TbPin } from 'react-icons/tb';
+import { TbPinFilled, TbPin } from 'react-icons/tb';
 import { MdDeleteOutline, MdEdit } from 'react-icons/md';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,11 +21,11 @@ const SingleNote: React.FC<SingleNoteProps> = ({
   date,
   content,
   categories = [],
-  // isPinned = false,
+  isPinned = false,
   onClose = () => {},
   onEdit,
   onDelete,
-  // onPin,
+  onPin,
   isCreatingNewNote = false,
   isEditing = false,
   onSubmit,
@@ -122,7 +122,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                 >
                   <MdDeleteOutline className="text-xl" />
                 </button>
-                {/* <button
+                <button
                   onClick={onPin}
                   className={`transition-200 flex aspect-square items-center justify-center gap-1 rounded-full border-2 border-amber-400 p-2 font-medium ${
                     isPinned
@@ -135,7 +135,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                   ) : (
                     <TbPin className="text-xl" />
                   )}
-                </button> */}
+                </button>
               </div>
             </div>
           </>
@@ -222,7 +222,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                     <MdDeleteOutline className="text-xl" />
                   </button>
                 )}
-                {/* <button
+                <button
                   onClick={onPin}
                   className={`transition-200 flex aspect-square items-center justify-center gap-1 rounded-full border-2 border-amber-400 p-2 font-medium ${
                     isPinned
@@ -235,7 +235,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                   ) : (
                     <TbPin className="text-xl" />
                   )}
-                </button> */}
+                </button>
               </div>
             </div>
           </form>
