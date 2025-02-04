@@ -7,7 +7,7 @@ export const registerUser = async (
   email: string,
   password: string,
 ) => {
-  const response = await axios.post(`${API_BASE_URL}/register`, {
+  const response = await axios.post(`${API_BASE_URL}/auth/register`, {
     username,
     email,
     password,
@@ -21,7 +21,7 @@ export const loginUser = async (
   rememberMe: boolean,
 ) => {
   const response = await axios.post(
-    `${API_BASE_URL}/login`,
+    `${API_BASE_URL}/auth/login`,
     {
       email,
       password,
@@ -39,7 +39,7 @@ export const loginUser = async (
 
 export const handleLogout = async () => {
   try {
-    await axios.post(`${API_BASE_URL}/logout`, {}, { withCredentials: true });
+    await axios.post(`${API_BASE_URL}/auth/logout`, {}, { withCredentials: true });
     localStorage.removeItem('token');
     window.location.href = '/login';
   } catch (error) {
