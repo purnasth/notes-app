@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NotesCard from '../components/ui/NotesCard';
 import Pagination from '../components/ui/Pagination';
 import { IoAddOutline } from 'react-icons/io5';
@@ -6,99 +6,187 @@ import SingleNote from '../components/SingleNote';
 import Error404 from '../layouts/Error404';
 import { toast } from 'react-toastify';
 import Navbar from '../layouts/Navbar';
+import {
+  getNotes,
+  createNote,
+  updateNote,
+  deleteNote,
+  togglePin,
+} from '../utils/api';
 
-const initialNotes = [
-  {
-    _id: '1',
-    title: 'Interview for Associate Engineer',
-    date: new Date().toDateString(),
-    content:
-      'The interview will be conducted by Leapfrog Technology for the position of Associate Software Engineer. The interview will be conducted in two rounds. The first round will be a written test and the second round will be a technical interview. On the first round, the written test is about the notes-app development. The notes-app is built with a PERN stack; PostgreSQL, Express, React, and Node.js.',
-    tags: ['interview', 'leapfrog', 'associate engineer'],
-    isPinned: true,
-  },
-  {
-    _id: '2',
-    title: 'On Boarding after Hiring',
-    date: new Date().toDateString(),
-    content:
-      'After hiring, the onboarding process will start. The onboarding process will be conducted by the HR department. The onboarding process will include the introduction of the company, the introduction of the team, the introduction of the project, the introduction of the tools, and the introduction of the company policies.',
-    tags: ['onboarding', 'hiring'],
-    isPinned: false,
-  },
-  {
-    _id: '3',
-    title: 'Board Exam Routine',
-    date: new Date().toDateString(),
-    content:
-      'The routine of the board exam has been published. The exam will start from 1st January 2022. The exam will be conducted in two shifts. The first shift will start at 9 AM and the second shift will start at 2 PM. The exam will be conducted in offline mode.',
-    tags: ['exam', 'board exam', 'routine'],
-    isPinned: false,
-  },
-  {
-    _id: '4',
-    title: 'Marvel: Doomsday',
-    date: new Date().toDateString(),
-    content:
-      'The Marvel movie "Doomsday" has been released. The movie is about the end of the world. The movie is directed by Steven Spielberg. The movie has a rating of 4.5 out of 5. The movie has been released in 4K resolution.',
-    tags: ['movie', 'marvel', 'doomsday'],
-    isPinned: false,
-  },
-  {
-    _id: '5',
-    title: 'Chess Tournament',
-    date: new Date().toDateString(),
-    content:
-      'The chess tournament will be conducted in the school. The tournament will start from 1st February 2022. The tournament will be conducted in two categories. The first category will be for juniors and the second category will be for seniors. The tournament will be conducted in offline mode.',
-    tags: ['chess', 'tournament'],
-    isPinned: false,
-  },
-  {
-    _id: '6',
-    title: 'Portfolio Design',
-    date: new Date().toDateString(),
-    content:
-      'The portfolio design has been completed. The portfolio is designed with a minimalist design. The portfolio is designed with a dark theme. The portfolio is designed with a responsive design. The portfolio is designed with a mobile-first approach.',
-    tags: ['portfolio', 'design'],
-    isPinned: false,
-  },
-  {
-    _id: '7',
-    title: 'React Native Workshop',
-    date: new Date().toDateString(),
-    content:
-      'The React Native workshop will be conducted by the IT Club. The workshop will start from 1st March 2022. The workshop will be conducted in two sessions. The first session will be about the introduction of React Native and the second session will be about the hands-on workshop.',
-    tags: ['workshop', 'react native', 'it club'],
-    isPinned: false,
-  },
-  {
-    _id: '8',
-    title: 'Web Development Bootcamp',
-    date: new Date().toDateString(),
-    content:
-      'The web development bootcamp will be conducted by the Computer Club. The bootcamp will start from 1st April 2022. The bootcamp will be conducted in two phases. The first phase will be about the front-end development and the second phase will be about the back-end development.',
-    tags: ['bootcamp', 'web development', 'computer club'],
-    isPinned: false,
-  },
-  {
-    _id: '9',
-    title: 'Hackathon Event',
-    date: new Date().toDateString(),
-    content:
-      'The hackathon event will be conducted by the Programming Club. The event will start from 1st May 2022. The event will be conducted in two categories. The first category will be for juniors and the second category will be for seniors. The event will be conducted in offline mode.',
-    tags: ['hackathon', 'event', 'programming club'],
-    isPinned: false,
-  },
-];
+type Note = {
+  id: string;
+  title: string;
+  date: string;
+  content: string;
+  categories: string[];
+  isPinned: boolean;
+  created_at: string;
+  modified_at?: string;
+  user_id: string;
+};
+
+// const initialNotes = [
+//   {
+//     _id: '1',
+//     title: 'Interview for Associate Engineer',
+//     date: new Date().toDateString(),
+//     content:
+//       'The interview will be conducted by Leapfrog Technology for the position of Associate Software Engineer. The interview will be conducted in two rounds. The first round will be a written test and the second round will be a technical interview. On the first round, the written test is about the notes-app development. The notes-app is built with a PERN stack; PostgreSQL, Express, React, and Node.js.',
+//     tags: ['interview', 'leapfrog', 'associate engineer'],
+//     isPinned: true,
+//   },
+//   {
+//     _id: '2',
+//     title: 'On Boarding after Hiring',
+//     date: new Date().toDateString(),
+//     content:
+//       'After hiring, the onboarding process will start. The onboarding process will be conducted by the HR department. The onboarding process will include the introduction of the company, the introduction of the team, the introduction of the project, the introduction of the tools, and the introduction of the company policies.',
+//     tags: ['onboarding', 'hiring'],
+//     isPinned: false,
+//   },
+//   {
+//     _id: '3',
+//     title: 'Board Exam Routine',
+//     date: new Date().toDateString(),
+//     content:
+//       'The routine of the board exam has been published. The exam will start from 1st January 2022. The exam will be conducted in two shifts. The first shift will start at 9 AM and the second shift will start at 2 PM. The exam will be conducted in offline mode.',
+//     tags: ['exam', 'board exam', 'routine'],
+//     isPinned: false,
+//   },
+//   {
+//     _id: '4',
+//     title: 'Marvel: Doomsday',
+//     date: new Date().toDateString(),
+//     content:
+//       'The Marvel movie "Doomsday" has been released. The movie is about the end of the world. The movie is directed by Steven Spielberg. The movie has a rating of 4.5 out of 5. The movie has been released in 4K resolution.',
+//     tags: ['movie', 'marvel', 'doomsday'],
+//     isPinned: false,
+//   },
+//   {
+//     _id: '5',
+//     title: 'Chess Tournament',
+//     date: new Date().toDateString(),
+//     content:
+//       'The chess tournament will be conducted in the school. The tournament will start from 1st February 2022. The tournament will be conducted in two categories. The first category will be for juniors and the second category will be for seniors. The tournament will be conducted in offline mode.',
+//     tags: ['chess', 'tournament'],
+//     isPinned: false,
+//   },
+//   {
+//     _id: '6',
+//     title: 'Portfolio Design',
+//     date: new Date().toDateString(),
+//     content:
+//       'The portfolio design has been completed. The portfolio is designed with a minimalist design. The portfolio is designed with a dark theme. The portfolio is designed with a responsive design. The portfolio is designed with a mobile-first approach.',
+//     tags: ['portfolio', 'design'],
+//     isPinned: false,
+//   },
+//   {
+//     _id: '7',
+//     title: 'React Native Workshop',
+//     date: new Date().toDateString(),
+//     content:
+//       'The React Native workshop will be conducted by the IT Club. The workshop will start from 1st March 2022. The workshop will be conducted in two sessions. The first session will be about the introduction of React Native and the second session will be about the hands-on workshop.',
+//     tags: ['workshop', 'react native', 'it club'],
+//     isPinned: false,
+//   },
+//   {
+//     _id: '8',
+//     title: 'Web Development Bootcamp',
+//     date: new Date().toDateString(),
+//     content:
+//       'The web development bootcamp will be conducted by the Computer Club. The bootcamp will start from 1st April 2022. The bootcamp will be conducted in two phases. The first phase will be about the front-end development and the second phase will be about the back-end development.',
+//     tags: ['bootcamp', 'web development', 'computer club'],
+//     isPinned: false,
+//   },
+//   {
+//     _id: '9',
+//     title: 'Hackathon Event',
+//     date: new Date().toDateString(),
+//     content:
+//       'The hackathon event will be conducted by the Programming Club. The event will start from 1st May 2022. The event will be conducted in two categories. The first category will be for juniors and the second category will be for seniors. The event will be conducted in offline mode.',
+//     tags: ['hackathon', 'event', 'programming club'],
+//     isPinned: false,
+//   },
+// ];
 
 const Home: React.FC = () => {
-  const [notes, setNotes] = useState(initialNotes);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [selectedNote, setSelectedNote] = useState<(typeof notes)[0] | null>(
     null,
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingNewNote, setIsCreatingNewNote] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
+  // Fetch notes on component mount
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const data = await getNotes();
+        setNotes(data);
+      } catch (error) {
+        toast.error('Failed to fetch notes');
+      }
+    };
+    fetchNotes();
+  }, []);
+
+  // Handle note creation
+  const handleCreateNote = async (note: {
+    title: string;
+    content: string;
+    categories: string[];
+  }) => {
+    try {
+      const newNote = await createNote(note);
+      setNotes([...notes, newNote]);
+      toast.success('Note created successfully!');
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error('Failed to create note');
+    }
+  };
+
+  // Handle note update
+  const handleUpdateNote = async (id: string, updatedNote: Partial<Note>) => {
+    try {
+      const note = await updateNote(id, {
+        title: updatedNote.title || '',
+        content: updatedNote.content || '',
+        categories: updatedNote.categories || [],
+      });
+      setNotes(notes.map((n) => (n.id === id ? note : n)));
+      toast.success('Note updated successfully!');
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error('Failed to update note');
+    }
+  };
+
+  // Handle note deletion
+  const handleDeleteNote = async (id: string) => {
+    try {
+      await deleteNote(id);
+      setNotes(notes.filter((note) => note.id !== id));
+      toast.success('Note deleted successfully!');
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error('Failed to delete note');
+    }
+  };
+
+  // Handle pin/unpin
+  const handlePinNote = async (id: string) => {
+    try {
+      const note = await togglePin(id);
+      setNotes(notes.map((n) => (n.id === id ? note : n)));
+      toast.success(note.is_pinned ? 'Note pinned!' : 'Note unpinned!');
+    } catch (error) {
+      toast.error('Failed to toggle pin status');
+    }
+    setIsModalOpen(false);
+  };
 
   const handleNoteClick = (note: (typeof notes)[0]) => {
     setSelectedNote(note);
@@ -128,18 +216,13 @@ const Home: React.FC = () => {
     setIsEditing(false);
   };
 
-  const handleDelete = () => {
-    toast.success('Note deleted successfully!');
-    handleCloseModal();
-  };
-
   const handlePin = (noteId: string) => {
     const updatedNotes = notes.map((note) =>
-      note._id === noteId ? { ...note, isPinned: !note.isPinned } : note,
+      note.id === noteId ? { ...note, isPinned: !note.isPinned } : note,
     );
     setNotes(updatedNotes);
     toast.success(
-      updatedNotes.find((note) => note._id === noteId)?.isPinned
+      updatedNotes.find((note) => note.id === noteId)?.isPinned
         ? 'Note pinned successfully!'
         : 'Note unpinned successfully!',
     );
@@ -158,16 +241,17 @@ const Home: React.FC = () => {
           <section className="transition-linear w-fit columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3">
             {notes.map((note) => (
               <NotesCard
-                key={note._id}
-                title={note.title}
+                key={note.id}
+                title={note.isPinned ? 'Pin' : 'Unpin'}
                 date={note.date}
                 content={note.content}
-                tags={note.tags}
+                tags={note.categories}
                 isPinned={note.isPinned}
                 onEdit={() => handleEditNoteClick(note)}
-                onDelete={handleDelete}
-                onPin={() => handlePin(note._id)}
+                onDelete={() => note && handleDeleteNote(note.id)}
+                onPin={() => handlePin(note.id)}
                 onClick={() => handleNoteClick(note)}
+                onClose={handleCloseModal}
               />
             ))}
           </section>
@@ -184,16 +268,31 @@ const Home: React.FC = () => {
       {isModalOpen && (
         <SingleNote
           title={selectedNote?.title || ''}
-          date={selectedNote?.date || new Date().toDateString()}
+          date={selectedNote?.created_at || new Date().toDateString()}
           content={selectedNote?.content || ''}
-          tags={selectedNote?.tags || []}
+          tags={selectedNote?.categories || []}
           isPinned={selectedNote?.isPinned || false}
-          onClose={handleCloseModal}
-          onEdit={() => handleEditNoteClick(selectedNote!)}
-          onDelete={handleDelete}
-          onPin={() => handlePin(selectedNote?._id || '')}
+          onClose={() => setIsModalOpen(false)}
+          onEdit={() => {
+            setSelectedNote(selectedNote);
+            setIsEditing(true);
+          }}
+          onDelete={() => selectedNote && handleDeleteNote(selectedNote.id)}
+          onPin={() => selectedNote && handlePinNote(selectedNote.id)}
           isCreatingNewNote={isCreatingNewNote}
           isEditing={isEditing}
+          onSubmit={(data) => {
+            if (isCreatingNewNote) {
+              handleCreateNote({
+                ...data,
+                categories: (data.tags || []).filter(
+                  (tag): tag is string => !!tag,
+                ),
+              });
+            } else if (selectedNote) {
+              handleUpdateNote(selectedNote.id, data);
+            }
+          }}
         />
       )}
     </>
