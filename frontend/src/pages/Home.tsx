@@ -6,12 +6,7 @@ import SingleNote from '../components/SingleNote';
 import Error404 from '../layouts/Error404';
 import { toast } from 'react-toastify';
 import Navbar from '../layouts/Navbar';
-import {
-  getNotes,
-  createNote,
-  updateNote,
-  deleteNote,
-} from '../utils/api';
+import { getNotes, createNote, updateNote, deleteNote } from '../utils/api';
 import { NoteProps } from '../interfaces/types';
 
 // const initialNotes = [
@@ -211,7 +206,9 @@ const Home: React.FC = () => {
   // Sort notes by pinned status and created date
   const sortedNotes = notes.sort((a, b) => {
     if (a.isPinned === b.isPinned) {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     }
     return a.isPinned ? -1 : 1;
   });
@@ -225,13 +222,14 @@ const Home: React.FC = () => {
         />
       ) : (
         <main>
-          <section className="transition-linear w-fit columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3">
+          <section className="transition-linear w-fit columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3 2xl:columns-4">
             {sortedNotes.map((note) => (
               <NotesCard
                 key={note.id}
                 id={note.id}
                 title={note.title}
-                date={note.date}
+                // date={note.date}
+                date={selectedNote?.created_at || new Date().toDateString()}
                 content={note.content}
                 categories={note.categories}
                 isPinned={note.isPinned}

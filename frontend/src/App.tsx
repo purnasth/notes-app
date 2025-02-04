@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 // import Navbar from './layouts/Navbar';
 import { ToastContainer } from 'react-toastify';
+import About from './pages/About';
 
 // Check if the user is authenticated
 const isAuthenticated = () => {
@@ -66,6 +67,7 @@ const App: React.FC = () => {
             }
           />
           <Route path="/signup" element={<Navigate to="/register" />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 
