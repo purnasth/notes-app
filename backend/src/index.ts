@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes";
+import noteRoutes from "./routes/noteRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
@@ -10,10 +11,12 @@ dotenv.config();
 const app = express();
 // app.use(cors());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/notes", noteRoutes);
 
 // After all routes
 app.use(errorHandler);

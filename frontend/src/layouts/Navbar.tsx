@@ -35,7 +35,7 @@ const Navbar = () => {
     const fetchCurrentUser = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/me`,
+          `${import.meta.env.VITE_API_BASE_URL}/auth/me`,
           {
             withCredentials: true,
           },

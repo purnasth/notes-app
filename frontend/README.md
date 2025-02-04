@@ -24,13 +24,73 @@ Notes App is a MERN stack application that allows users to create, read, update,
 ### **src/**
 
 | Folder            | Description                                      |
-|--------------------|--------------------------------------------------|
+|-------------------|-------------------------------------------------|
 | `components/`     | Contains reusable React components               |
 | `hooks/`          | Custom React hooks                               |
 | `pages/`          | Page-level components                            |
-| `styles/`         | Global CSS and TailwindCSS configurations         |
+| `styles/`         | Global CSS and TailwindCSS configurations        |
 | `utils/`          | Utility functions and API calls                  |
 | `types/`          | TypeScript type definitions                      |
+
+
+## 📁 File Structure
+
+```plaintext
+📂 frontend
+├── 📂 public
+│   ├── favicon.ico
+│   ├── robots.txt
+│   └── index.html
+├── 📂 src
+│   ├── 📂 assets
+│   │   ├── 📂 img
+│   │   ├── 📂 svg
+│   │   └── [Other Assets]
+│   ├── 📂 components
+│   │   ├── 📂 ui
+│   │   │   ├── Modal.tsx
+│   │   │   ├── NotesCard.tsx
+│   │   │   ├── Pagination.tsx
+│   │   │   ├── SearchBar.tsx
+│   │   │   └── SkeletonLoader.tsx
+│   │   ├── PasswordToggle.tsx
+│   │   └── SingleNote.tsx
+|   ├── 📂 constants
+│   │   └── data.ts
+│   ├── 📂 hooks
+│   │   └── useFormValidation.ts
+│   ├── 📂 interfaces
+│   │   └── types.ts
+|   ├── 📂 layouts
+│   │   ├── Navbar.tsx
+│   │   └── Error404.tsx
+│   ├── 📂 pages
+│   │   ├── Home.tsx
+│   │   ├── Login.tsx
+│   │   └── Register.tsx
+│   ├── 📂 utils
+│   │   ├── api.ts
+│   │   ├── helper.ts
+│   │   └── validationSchemas.ts
+│   ├── App.tsx
+│   ├── main.tsx
+│   ├── vite-env.d.ts
+│   └── index.css
+├── .env
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
+├── eslintrc.config.js
+├── index.html
+├── package.json
+├── postcss.config.js
+├── README.md
+├── tailwind.config.js
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+```
 
 ---
 
