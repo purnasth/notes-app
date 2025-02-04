@@ -20,7 +20,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({
   title,
   date,
   content,
-  tags = [],
+  categories = [],
   // isPinned = false,
   onClose = () => {},
   onEdit,
@@ -42,19 +42,19 @@ const SingleNote: React.FC<SingleNoteProps> = ({
     defaultValues: {
       title,
       content,
-      tags,
+      categories,
     },
   });
 
   useEffect(() => {
-    reset({ title, content, tags });
-  }, [title, content, tags, reset]);
+    reset({ title, content, categories });
+  }, [title, content, categories, reset]);
 
   const handleSave: SubmitHandler<NoteFormData> = (data) => {
     if (
       data.title === title &&
       data.content === content &&
-      JSON.stringify(data.tags) === JSON.stringify(tags)
+      JSON.stringify(data.categories) === JSON.stringify(categories)
     ) {
       toast.info('No changes detected.');
       return;
@@ -94,9 +94,9 @@ const SingleNote: React.FC<SingleNoteProps> = ({
             <p className="max-h-96 overflow-y-auto text-pretty text-lg leading-relaxed">
               {content}
             </p>
-            {tags.length > 0 && (
+            {categories.length > 0 && (
               <div className="flex flex-wrap items-center gap-2">
-                {tags.map((tag, index) => (
+                {categories.map((tag, index) => (
                   <span
                     key={index}
                     className="rounded-full border border-amber-200 bg-amber-50 px-2 text-sm font-normal text-amber-500"
@@ -157,7 +157,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                     {...register(field.name as keyof NoteFormData)}
                     placeholder={field.placeholder}
                     className={`mt-1 w-full rounded-md border border-dark/10 p-2 focus:border-amber-400 focus:outline-none ${
-                      field.error ? 'border-red-500' : ''
+                      field.error ? 'border-red-500 placeholder:text-red-500' : ''
                     }`}
                     rows={field.rows}
                     // maxLength={field.maxLength}
@@ -168,7 +168,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                     {...register(field.name as keyof NoteFormData)}
                     placeholder={field.placeholder}
                     className={`mt-1 w-full rounded-md border border-dark/10 p-2 focus:border-amber-400 focus:outline-none ${
-                      field.error ? 'border-red-500' : ''
+                      field.error ? 'border-red-500 placeholder:text-red-500' : ''
                     }`}
                     // maxLength={field.maxLength}
                   />
@@ -185,15 +185,15 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                     <input
                       type="checkbox"
                       className="accent-amber-400"
-                      checked={watch('tags')?.includes(tag)}
+                      checked={watch('categories')?.includes(tag)}
                       onChange={(e) => {
-                        const currentTags = watch('tags') || [];
+                        const currentCategories = watch('categories') || [];
                         if (e.target.checked) {
-                          setValue('tags', [...currentTags, tag]);
+                          setValue('categories', [...currentCategories, tag]);
                         } else {
                           setValue(
-                            'tags',
-                            currentTags.filter((t) => t !== tag),
+                            'categories',
+                            currentCategories.filter((t) => t !== tag),
                           );
                         }
                       }}

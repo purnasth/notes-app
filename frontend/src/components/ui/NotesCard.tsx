@@ -6,7 +6,7 @@ const NotesCard = ({
   title,
   date,
   content,
-  tags,
+  categories,
   isPinned,
   onEdit,
   onDelete,
@@ -25,9 +25,9 @@ const NotesCard = ({
         </div>
         <p className="line-clamp-4 text-pretty">{content}</p>
         <div>
-          {tags && (
+          {categories && (
             <div className="flex flex-wrap items-center gap-2">
-              {tags.map((tag, index) => (
+              {categories.map((tag, index) => (
                 <span
                   key={index}
                   className="rounded-full border border-amber-200 bg-amber-50 px-1 text-sm font-normal text-amber-500"
@@ -65,7 +65,7 @@ const NotesCard = ({
               e.stopPropagation();
               onPin();
             }}
-            className={`absolute -right-2 -top-2 flex size-8 items-center justify-center rounded-full border-2 border-amber-400 text-amber-400 hover:bg-amber-100 focus:outline-none ${
+            className={`transition-300 absolute -right-2 -top-2 flex size-8 items-center justify-center rounded-full border-2 border-amber-400 text-amber-400 hover:bg-amber-500 hover:text-dark focus:outline-none ${
               isPinned ? 'bg-amber-400 text-dark' : 'bg-amber-50'
             }`}
           >
