@@ -22,8 +22,8 @@ pnpm init
 Install dependencies:
 
 ```bash
-pnpm install express pg cors bcryptjs jsonwebtoken dotenv cookie-parser
-pnpm install --save-dev typescript @types/node @types/express @types/cors ts-node nodemon @types/pg @types/bcryptjs @types/jsonwebtoke @types/cookie-parser
+pnpm install express pg cors bcryptjs jsonwebtoken dotenv cookie-parser moment
+pnpm install --save-dev typescript @types/node @types/express @types/cors ts-node nodemon @types/pg @types/bcryptjs @types/jsonwebtoke @types/cookie-parser @types/moment
 ```
 
 `Note:` express is a web framework for Node.js, pg is a PostgreSQL client, cors is a middleware for enabling CORS with various options, bcryptjs is a library for hashing passwords, jsonwebtoken is a library for generating JWTs, and dotenv is a library for loading environment variables from a .env file.

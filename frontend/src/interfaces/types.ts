@@ -1,7 +1,6 @@
 export interface NoteProps {
   id: string;
   title: string;
-  date: string; //hmm
   content: string;
   categories?: string[];
   isPinned?: boolean;

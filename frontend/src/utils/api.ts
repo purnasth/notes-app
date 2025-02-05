@@ -127,7 +127,10 @@ export const deleteNote = async (id: string) => {
 // Toggle pin status
 export const togglePin = async (id: string) => {
   const response = await axios.patch(`${API_BASE_URL}/notes/${id}/pin`, {});
-  return response.data;
+  return {
+    ...response.data,
+    isPinned: response.data.is_pinned, // Transform snake_case to camelCase
+  };
 };
 
 // Fetch all categories

@@ -18,7 +18,8 @@ interface SingleNoteProps extends NoteProps {
 
 const SingleNote: React.FC<SingleNoteProps> = ({
   title,
-  date,
+  created_at,
+  modified_at,
   content,
   categories = [],
   isPinned = false,
@@ -89,7 +90,9 @@ const SingleNote: React.FC<SingleNoteProps> = ({
           <>
             <div>
               <h3 className="font-body text-2xl font-semibold">{title}</h3>
-              <p className="text-pretty text-sm text-gray-500">{date}</p>
+              <p className="text-pretty text-sm text-gray-500">
+                {modified_at ? `${modified_at}` : `${created_at}`}
+              </p>
             </div>
             <p className="max-h-96 overflow-y-auto text-pretty text-lg leading-relaxed">
               {content}
@@ -157,7 +160,9 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                     {...register(field.name as keyof NoteFormData)}
                     placeholder={field.placeholder}
                     className={`mt-1 w-full rounded-md border border-dark/10 p-2 focus:border-amber-400 focus:outline-none ${
-                      field.error ? 'border-red-500 placeholder:text-red-500' : ''
+                      field.error
+                        ? 'border-red-500 placeholder:text-red-500'
+                        : ''
                     }`}
                     rows={field.rows}
                     // maxLength={field.maxLength}
@@ -168,7 +173,9 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                     {...register(field.name as keyof NoteFormData)}
                     placeholder={field.placeholder}
                     className={`mt-1 w-full rounded-md border border-dark/10 p-2 focus:border-amber-400 focus:outline-none ${
-                      field.error ? 'border-red-500 placeholder:text-red-500' : ''
+                      field.error
+                        ? 'border-red-500 placeholder:text-red-500'
+                        : ''
                     }`}
                     // maxLength={field.maxLength}
                   />
