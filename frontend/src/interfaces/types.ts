@@ -16,3 +16,9 @@ export interface NoteProps {
   modified_at?: string;
   user_id: string;
 }
+
+export interface SearchBarProps {
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  // onChange: (value: string) => void;
+}

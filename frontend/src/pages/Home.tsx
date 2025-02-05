@@ -101,19 +101,61 @@ const Home: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingNewNote, setIsCreatingNewNote] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [search, setSearch] = useState('');
+  const [categories, setCategories] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState('created_at');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [page, setPage] = useState(1);
+  const limit = 6;
+  const [total, setTotal] = useState(0);
 
-  // Fetch notes on component mount
+  // Fetch notes on component mount and when query parameters change
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const data = await getNotes();
-        setNotes(data);
+        const data = await getNotes(
+          search,
+          categories,
+          sortBy,
+          sortOrder,
+          page,
+          limit,
+        );
+        setNotes(data.notes);
+        setTotal(data.total);
       } catch (error) {
         toast.error('Failed to fetch notes');
       }
     };
     fetchNotes();
-  }, []);
+  }, [search, categories, sortBy, sortOrder, page, limit]);
+
+  // Handle search input change
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
+
+  // Handle search on input submit for search
+  // const handleSearchChange = (searchValue: string) => {
+  //   setSearch(searchValue);
+  //   setPage(1);
+  // };
+
+  // Handle category filter change
+  const handleCategoryChange = (selectedCategories: string[]) => {
+    setCategories(selectedCategories);
+  };
+
+  // Handle sort change
+  const handleSortChange = (sortBy: string, sortOrder: 'asc' | 'desc') => {
+    setSortBy(sortBy);
+    setSortOrder(sortOrder);
+  };
+
+  // Handle pagination change
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   // Handle note creation
   const handleCreateNote = async (note: {
@@ -215,21 +257,30 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar value={search} onChange={handleSearchChange} />
       {notes.length < 1 ? (
         <Error404
           message={`Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`}
         />
       ) : (
         <main>
-          <section className="transition-linear w-fit columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3 2xl:columns-4">
+          <div>
+            <select
+              onChange={(e) => handleSortChange(e.target.value, sortOrder)}
+            >
+              <option value="created_at">Creation Date</option>
+              <option value="modified_at">Last Modified Date</option>
+              <option value="title">Alphabetical Order</option>
+            </select>
+          </div>
+          {/* <section className="transition-linear w-full columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3"> */}
+          <section className="transition-linear w-full grid grid-cols-3">
             {sortedNotes.map((note) => (
               <NotesCard
                 key={note.id}
                 id={note.id}
                 title={note.title}
-                // date={note.date}
-                date={selectedNote?.created_at || new Date().toDateString()}
+                date={note.date}
                 content={note.content}
                 categories={note.categories}
                 isPinned={note.isPinned}
@@ -243,7 +294,11 @@ const Home: React.FC = () => {
               />
             ))}
           </section>
-          <Pagination />
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(total / limit)}
+            onPageChange={handlePageChange}
+          />
         </main>
       )}
       <button

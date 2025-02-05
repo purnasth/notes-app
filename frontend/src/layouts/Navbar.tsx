@@ -7,8 +7,9 @@ import { getInitials } from '../utils/helper';
 import SearchBar from '../components/ui/SearchBar';
 import { handleLogout } from '../utils/api';
 import axios from 'axios';
+import { SearchBarProps } from '../interfaces/types';
 
-const Navbar = () => {
+const Navbar = ({ value, onChange }: SearchBarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -74,7 +75,7 @@ const Navbar = () => {
 
           <div className="flex items-center justify-end gap-2">
             <div className="flex w-full min-w-96">
-              <SearchBar />
+              <SearchBar value={value} onChange={onChange} />
             </div>
             <button
               className="group flex h-12 items-center gap-4 rounded-full border border-amber-400 bg-amber-400 py-1 pl-5 pr-1.5 text-dark"
@@ -133,7 +134,7 @@ const Navbar = () => {
               </li>
             </ul>
 
-            <SearchBar />
+            <SearchBar value={value} onChange={onChange} />
             <hr />
 
             <div className="p-2">
@@ -242,6 +243,24 @@ const Navbar = () => {
                   </label>
                 </li>
               </ul>
+            </div>
+
+            {/* buttton that applies / submit all the checked items of the cateogires and sort by */}
+
+            <div className="flex items-center justify-between gap-3">
+              <button
+                type="button"
+                className="w-full rounded-md bg-amber-400 py-2 text-sm font-medium text-white"
+              >
+                Apply Filters
+              </button>
+              {/* reset button */}
+              <button
+                type="button"
+                className="w-full rounded-md border border-amber-400 py-2 text-sm font-medium text-amber-400"
+              >
+                Reset Filters
+              </button>
             </div>
 
             <hr />

@@ -1,5 +1,5 @@
-import pool from '../config/db';
-import { Note } from '../interfaces/types';
+import pool from "../config/db";
+import { Note } from "../interfaces/types";
 
 export class NoteModel {
   static async create(note: Note): Promise<Note> {
@@ -14,7 +14,7 @@ export class NoteModel {
 
   static async findAllByUser(userId: number): Promise<Note[]> {
     const { rows } = await pool.query(
-      'SELECT * FROM notes WHERE user_id = $1 ORDER BY created_at DESC',
+      "SELECT * FROM notes WHERE user_id = $1 ORDER BY created_at DESC",
       [userId]
     );
     return rows;
@@ -31,7 +31,7 @@ export class NoteModel {
   }
 
   static async delete(id: number): Promise<void> {
-    await pool.query('DELETE FROM notes WHERE id = $1', [id]);
+    await pool.query("DELETE FROM notes WHERE id = $1", [id]);
   }
 
   static async togglePin(id: number): Promise<Note> {
@@ -42,5 +42,54 @@ export class NoteModel {
       [id]
     );
     return rows[0];
+  }
+
+  // Find notes with optional search, categories, sorting, pagination
+  static async findNotes(
+    userId: number,
+    search?: string,
+    categories?: string[],
+    sortBy?: string,
+    sortOrder?: "asc" | "desc",
+    page?: number,
+    limit?: number
+  ): Promise<{ notes: Note[]; total: number }> {
+    let baseQuery = "FROM notes WHERE user_id = $1";
+    const params: any[] = [userId];
+
+    if (search) {
+      baseQuery += ` AND (title ILIKE $${params.length + 1} OR content ILIKE $${
+        params.length + 1
+      })`;
+      params.push(`%${search}%`);
+    }
+
+    if (categories && categories.length > 0) {
+      baseQuery += ` AND categories @> $${params.length + 1}`;
+      params.push(categories);
+    }
+
+    // Get total count
+    const countQuery = `SELECT COUNT(*) ${baseQuery}`;
+    const countResult = await pool.query(countQuery, params);
+    const total = parseInt(countResult.rows[0].count, 10);
+
+    // Get paginated results
+    let dataQuery = `SELECT * ${baseQuery}`;
+
+    if (sortBy) {
+      dataQuery += ` ORDER BY ${sortBy} ${sortOrder || "asc"}`;
+    } else {
+      dataQuery += " ORDER BY created_at DESC";
+    }
+
+    if (page && limit) {
+      const offset = (page - 1) * limit;
+      dataQuery += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+      params.push(limit, offset);
+    }
+
+    const { rows } = await pool.query(dataQuery, params);
+    return { notes: rows, total };
   }
 }

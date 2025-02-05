@@ -85,8 +85,24 @@ export const createNote = async (note: {
 };
 
 // Fetch all notes
-export const getNotes = async () => {
-  const response = await axios.get(`${API_BASE_URL}/notes`);
+export const getNotes = async (
+  search?: string,
+  categories?: string[],
+  sortBy?: string,
+  sortOrder?: 'asc' | 'desc',
+  page?: number,
+  limit?: number,
+) => {
+  const response = await axios.get(`${API_BASE_URL}/notes`, {
+    params: {
+      search,
+      categories,
+      sortBy,
+      sortOrder,
+      page,
+      limit,
+    },
+  });
   return response.data;
 };
 

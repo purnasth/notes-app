@@ -595,3 +595,173 @@ Response:
 - d. Internal server error (Database error)
   - **Status**: `500 Internal Server Error`
   - **Response**: `{"error": "Internal server error"}`
+
+7. Search notes
+
+- **GET** `http://localhost:5000/api/notes/search=<query>`
+- **Purpose:** Search notes based on the query string.
+- **Example:** `http://localhost:5000/api/notes?search=test
+
+Request headers:
+
+```json
+{
+  "Authorization": `Bearer <JWT_TOKEN>`
+} 
+
+`Note:` For adding the `bearer token` in the `Authorization` header, open `Auth Type` dropdown and select `Bearer Token` and paste your above copied `JWT token`.
+
+Response:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Test Note",
+    "content": "This is a test note",
+    "categories": [
+        "work",
+        "personal"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  }
+]
+```
+
+8. Sort By Created Date
+
+- **GET** `http://localhost:5000/api/notes?sortBy=created_at&sortOrder=desc`
+- **Purpose:** Sort notes by created date in descending order.
+
+Request headers:
+
+```json
+{
+  "Authorization": `Bearer <JWT_TOKEN>`
+}
+```
+
+Response:
+
+```json
+[
+  {
+    "id": 2,
+    "title": "Another Note",
+    "content": "This is another note",
+    "categories": [
+        "work"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": true,
+    "user_id": 2
+  },
+  {
+    "id": 1,
+    "title": "Test Note",
+    "content": "This is a test note",
+    "categories": [
+        "work",
+        "personal"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  }
+]
+```
+
+9. Sort by Alphabetical Order
+
+- **GET** `http://localhost:5000/api/notes?sortBy=title&sortOrder=asc`
+- **Purpose:** Sort notes by title in ascending order.
+
+Request headers:
+
+```json
+{
+  "Authorization": `Bearer <JWT_TOKEN>`
+}
+```
+
+Response:
+
+```json
+[
+  {
+    "id": 2,
+    "title": "Another Note",
+    "content": "This is another note",
+    "categories": [
+        "work"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": true,
+    "user_id": 2
+  },
+  {
+    "id": 1,
+    "title": "Test Note",
+    "content": "This is a test note",
+    "categories": [
+        "work",
+        "personal"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  }
+]
+```
+
+10. Pagination
+
+- **GET** `http://localhost:5000/api/notes?page=2&limit=2`
+- **Purpose:** Fetch notes with pagination.
+
+Request headers:
+
+```json
+{
+  "Authorization": `Bearer <JWT_TOKEN>`
+}
+```
+
+Response:
+
+```json
+[
+  {
+    "id": 3,
+    "title": "Updated Note Title: from CRUD update",
+    "content": "This is the updated content",
+    "categories": [
+        "work",
+        "CRUD"
+    ],
+    "created_at": "2025-02-03T20:14:28.460Z",
+    "modified_at": "2025-02-03T20:18:54.365Z",
+    "is_pinned": true,
+    "user_id": 2
+  },
+  {
+    "id": 4,
+    "title": "New Note",
+    "content": "This is a new note",
+    "categories": [
+        "work"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  }
+]
+```

@@ -1,18 +1,16 @@
-import Navbar from '../layouts/Navbar';
 import { Link } from 'react-router-dom';
 import { TbBrandGithub } from 'react-icons/tb';
 import { RiPenNibLine } from 'react-icons/ri';
 
 import { IoBulbOutline } from 'react-icons/io5';
 
-import addTask from '../assets/svg/add-task.svg';
+// import addTask from '../assets/svg/add-task.svg';
 import human1 from '../assets/svg/human-1.svg';
 import human2 from '../assets/svg/human-2.svg';
 
 const About = () => {
   return (
     <>
-      <Navbar />
       <main className="flex h-screen flex-col items-center justify-center">
         <div className="relative mx-auto max-w-3xl 2xl:max-w-5xl">
           <div className="pointer-events-none absolute inset-0 -z-10 flex select-none items-start justify-start">
@@ -63,7 +61,7 @@ const About = () => {
         </div>
 
         <img
-          src="https://kevinlim17.com/static/2ac74794ae87575fb710c5cd67111c78/ad060/avatar.png"
+          src={human1}
           alt="Add Task"
           className="absolute bottom-0 left-0 -z-20 h-[60vh] w-auto object-contain mix-blend-darken"
           draggable="false"
