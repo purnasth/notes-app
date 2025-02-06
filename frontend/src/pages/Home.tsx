@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NotesCard from '../components/ui/NotesCard';
 import Pagination from '../components/ui/Pagination';
+import SkeletonLoader from '../components/ui/SkeletonLoader';
 import { IoAddOutline } from 'react-icons/io5';
 import SingleNote from '../components/SingleNote';
 import Error404 from '../layouts/Error404';
@@ -35,10 +36,12 @@ const Home: React.FC<HomeProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingNewNote, setIsCreatingNewNote] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   // Fetch notes on component mount and when page or search changes
   useEffect(() => {
     const fetchNotes = async () => {
+      setIsLoading(true); // Set loading to true before fetching
       try {
         const response = await getNotes(
           search,
@@ -53,6 +56,8 @@ const Home: React.FC<HomeProps> = ({
       } catch (error) {
         toast.error('Failed to fetch notes');
         setNotes([]);
+      } finally {
+        setIsLoading(false); // Set loading to false after fetching
       }
     };
 
@@ -175,15 +180,22 @@ const Home: React.FC<HomeProps> = ({
 
   return (
     <>
-      {sortedNotes.length > 0 ? (
+      {isLoading ? (
         <main>
-          <section className="transition-linear grid w-full grid-cols-3">
+          <section className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4">
+            {Array.from({ length: limit }).map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </section>
+        </main>
+      ) : sortedNotes.length > 0 ? (
+        <main>
+          <section className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4">
             {sortedNotes.map((note) => (
               <NotesCard
                 key={note.id}
                 id={note.id}
-                // title={note.title}
-                title={note.isPinned ? `(Pinned)` : "Unpinned"}
+                title={note.title}
                 content={note.content}
                 categories={note.categories}
                 isPinned={note.isPinned}

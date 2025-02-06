@@ -10,7 +10,7 @@
 
   * {
     /* scrollbar-width: thin; */
-    scrollbar-width: thin;
+    scrollbar-width: none;
     scrollbar-color: #fbbf24 #fffbeb;
   }
 

@@ -45,7 +45,6 @@ export class NoteModel {
   }
 
   // Find notes with optional search, categories, sorting, pagination
-  // In noteModel.ts
   static async findNotes(
     userId: number,
     search?: string,

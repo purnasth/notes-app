@@ -103,7 +103,17 @@ export const getNotes = async (
       limit,
     },
   });
-  return response.data;
+
+  // Transform snake_case to camelCase for all notes
+  const transformedNotes = response.data.notes.map((note: any) => ({
+    ...note,
+    isPinned: note.is_pinned, // Map is_pinned to isPinned
+  }));
+
+  return {
+    ...response.data,
+    notes: transformedNotes, // Return the transformed notes
+  };
 };
 
 // Update a note

@@ -85,7 +85,7 @@ const App: React.FC = () => {
             path="/"
             element={
               <Home
-                // notes={notes} // Pass notes to Home
+                // notes={notes}
                 page={page}
                 total={total}
                 limit={limit}
