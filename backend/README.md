@@ -195,6 +195,18 @@ CREATE TABLE sessions (
   expires_at TIMESTAMP NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Create notes table
+CREATE TABLE notes (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    categories VARCHAR(255)[],
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_pinned BOOLEAN DEFAULT false,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE
+);
 ```
 
 To verify the database was created, list all databases:

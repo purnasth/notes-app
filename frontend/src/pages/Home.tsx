@@ -190,6 +190,9 @@ const Home: React.FC<HomeProps> = ({
         </main>
       ) : sortedNotes.length > 0 ? (
         <main>
+          {/* <span className="text-base text-dark p-3 inline-block">
+            {total} {total === 1 ? 'note' : 'notes'} found.
+          </span> */}
           <section className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4">
             {sortedNotes.map((note) => (
               <NotesCard

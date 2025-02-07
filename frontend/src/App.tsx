@@ -47,8 +47,14 @@ const App: React.FC = () => {
   }, [search, categories, sortBy, sortOrder, page, limit]);
 
   // Handle search input change
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+  // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearch(event.target.value);
+  //   setPage(1); // Reset to the first page when search changes
+  // };
+
+  // Handle search input change on submit
+  const handleSearchChange = (searchValue: string) => {
+    setSearch(searchValue);
     setPage(1); // Reset to the first page when search changes
   };
 

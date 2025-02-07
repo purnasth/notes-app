@@ -64,10 +64,18 @@ export class NoteModel {
       params.push(`%${search}%`);
     }
 
+    // if (categories && categories.length > 0) {
+    //   baseQuery += ` AND categories @> $${params.length + 1}::varchar[]`;
+    //   params.push(categories);
+    // }
+
+    // convert the params.length into the lower case
+
     if (categories && categories.length > 0) {
-      baseQuery += ` AND categories @> $${params.length + 1}`;
-      params.push(categories);
+      baseQuery += ` AND categories @> $${params.length + 1}::varchar[]`;
+      params.push(categories.map((c) => c.toLowerCase()));
     }
+
 
     // Get total count
     const countQuery = `SELECT COUNT(*) ${baseQuery}`;
@@ -89,7 +97,13 @@ export class NoteModel {
       params.push(limit, offset);
     }
 
+    console.log("Data Query:", dataQuery);
+    console.log("Params:", params);
+
     const { rows } = await pool.query(dataQuery, params);
+
+    console.log("Rows:", rows);
+
     return { notes: rows, total };
   }
 }
