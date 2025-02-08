@@ -90,11 +90,8 @@ export class NoteModel {
       params.push(limit, offset);
     }
 
-    console.log("Data Query:", dataQuery);
-    console.log("Params:", params);
-
     const { rows } = await pool.query(dataQuery, params);
-
+    
     console.log("Rows:", rows);
 
     return { notes: rows, total };

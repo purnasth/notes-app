@@ -120,7 +120,6 @@ const Home: React.FC<HomeProps> = ({
   const handlePin = async (noteId: string) => {
     try {
       const updatedNote = await togglePin(noteId);
-      console.log('Updated Note:', updatedNote); // Debugging: Check the response
 
       // Update the notes state with the new pin status
       setNotes((prevNotes) =>
