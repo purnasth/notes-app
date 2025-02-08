@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { TbMenu2, TbSortDescending2, TbCategory2 } from 'react-icons/tb';
 import { SiGoogletasks } from 'react-icons/si';
 import { IoMdClose } from 'react-icons/io';
@@ -7,6 +7,7 @@ import { getInitials } from '../utils/helper';
 import SearchBar from '../components/ui/SearchBar';
 import { handleLogout } from '../utils/api';
 import axios from 'axios';
+import { GrPowerReset } from 'react-icons/gr';
 
 interface NavbarProps {
   value: string;
@@ -279,18 +280,21 @@ const Navbar: React.FC<NavbarProps> = ({
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="transition-200 w-full rounded-md border-2 border-amber-300 bg-amber-100 py-2 text-sm font-medium text-dark hover:bg-amber-200 hover:text-dark"
+                className="transition-200 w-full flex-1 rounded-md border-2 border-amber-300 bg-amber-100 px-3 py-2 text-sm font-medium text-dark hover:bg-amber-200 hover:text-dark"
               >
-                Reset Filters
+                <GrPowerReset className="inline-block text-base" />
+                {/* Reset Filters */}
               </button>
             </div>
 
             <hr />
 
             <div className="user-profile flex items-center gap-4 p-2">
-              <span className="transition-300 flex size-14 scale-[0.95] items-center justify-center rounded-full border border-amber-500 bg-amber-100 p-2 text-xl font-bold text-amber-500 outline outline-1 outline-offset-2 outline-amber-500/40 group-hover:scale-100">
-                {getInitials(user?.username || 'Guest')}
-              </span>
+              <Link to="/profile" className="flex items-center gap-2 text-dark">
+                <span className="transition-300 flex size-14 scale-[0.95] items-center justify-center rounded-full border border-amber-500 bg-amber-100 p-2 text-xl font-bold text-amber-500 outline outline-1 outline-offset-2 outline-amber-500/40 group-hover:scale-100">
+                  {getInitials(user?.username || 'Guest')}
+                </span>
+              </Link>
               <div className="text-dark">
                 <h3 className="text-base capitalize">
                   {user?.username || 'Guest'}

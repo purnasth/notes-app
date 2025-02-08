@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import About from './pages/About';
 import { getNotes } from './utils/api';
 import { NoteProps } from './interfaces/types';
+import UserProfile from './pages/UserProfile';
 
 const App: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -107,6 +108,20 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
+          <Route
+            path="/profile"
+            element={
+              <UserProfile
+                user={{
+                  id: 2,
+                  username: 'purna_shrestha',
+                  email: 'purna@gmail.com',
+                  created_at: '2025-02-02T17:45:52.851Z',
+                }}
+                notes={notes}
+              />
+            }
+          />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>

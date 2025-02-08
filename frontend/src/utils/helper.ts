@@ -16,3 +16,17 @@ export const getInitials = (name: string): string => {
 
   return initials.toUpperCase();
 };
+
+export const getFirstName = (name: string): string => {
+  if (name === null || name === undefined) return '';
+
+  // return name.split(' ')[0];
+  return name.split(/[\s_]+/)[0];
+};
+
+export const getFullName = (name: string): string => {
+  if (name === null || name === undefined) return '';
+
+  // return name.split(' ')[0];
+  return name.split(/[\s_]+/).join(' ');
+};
