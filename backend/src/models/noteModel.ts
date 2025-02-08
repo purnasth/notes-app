@@ -4,10 +4,10 @@ import { Note } from "../interfaces/types";
 export class NoteModel {
   static async create(note: Note): Promise<Note> {
     const { rows } = await pool.query(
-      `INSERT INTO notes (title, content, categories, user_id) 
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO notes (title, content, categories, user_id, is_pinned) 
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
-      [note.title, note.content, note.categories, note.user_id]
+      [note.title, note.content, note.categories, note.user_id, note.is_pinned]
     );
     return rows[0];
   }
@@ -72,24 +72,17 @@ export class NoteModel {
     // convert the params.length into the lower case
 
     if (categories && categories.length > 0) {
-      baseQuery += ` AND categories @> $${params.length + 1}::varchar[]`;
+      baseQuery += ` AND categories && $${params.length + 1}::varchar[]`;
       params.push(categories.map((c) => c.toLowerCase()));
     }
-
 
     // Get total count
     const countQuery = `SELECT COUNT(*) ${baseQuery}`;
     const countResult = await pool.query(countQuery, params);
     const total = parseInt(countResult.rows[0].count, 10);
 
-    // Get paginated results
-    let dataQuery = `SELECT * ${baseQuery}`;
-
-    if (sortBy) {
-      dataQuery += ` ORDER BY ${sortBy} ${sortOrder || "asc"}`;
-    } else {
-      dataQuery += " ORDER BY created_at DESC";
-    }
+    // Sort to prioritize pinned notes first, then apply sorting preference
+    let dataQuery = `SELECT * ${baseQuery} ORDER BY is_pinned DESC, ${sortBy} ${sortOrder}`;
 
     if (page && limit) {
       const offset = (page - 1) * limit;

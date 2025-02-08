@@ -20,4 +20,5 @@ export interface SearchBarProps {
   value: string;
   // onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChange: (value: string) => void;
+  setNavOpen: (isOpen: boolean) => void;
 }

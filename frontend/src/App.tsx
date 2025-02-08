@@ -18,12 +18,13 @@ import { NoteProps } from './interfaces/types';
 const App: React.FC = () => {
   const [search, setSearch] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState('created_at');
+  const [sortBy, setSortBy] = useState('modified_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
   const limit = 12;
   const [total, setTotal] = useState(0);
-  const [notes, setNotes] = useState<NoteProps[]>([]); // Keep this for now
+  const [notes, setNotes] = useState<NoteProps[]>([]);
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   // Fetch notes whenever search, categories, sort, or page changes
   useEffect(() => {
@@ -85,13 +86,16 @@ const App: React.FC = () => {
           onChange={handleSearchChange}
           onCategoryChange={handleCategoryChange}
           onSortChange={handleSortChange}
+          isNavOpen={isNavOpen}
+          setIsNavOpen={setIsNavOpen}
         />
         <Routes>
           <Route
             path="/"
             element={
               <Home
-                // notes={notes}
+                notes={notes}
+                setNotes={setNotes}
                 page={page}
                 total={total}
                 limit={limit}

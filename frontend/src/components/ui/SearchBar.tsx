@@ -41,7 +41,7 @@ import { IoSearch } from 'react-icons/io5';
 import { SearchBarProps } from '../../interfaces/types';
 import { useState } from 'react';
 
-const SearchBar = ({ value, onChange }: SearchBarProps) => {
+const SearchBar = ({ value, onChange, setNavOpen }: SearchBarProps) => {
   const [searchValue, setSearchValue] = useState(value);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +51,7 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onChange(searchValue);
+    setNavOpen(false);
   };
 
   return (

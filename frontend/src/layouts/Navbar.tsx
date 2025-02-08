@@ -10,10 +10,11 @@ import axios from 'axios';
 
 interface NavbarProps {
   value: string;
-  // onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChange: (searchValue: string) => void;
   onCategoryChange: (categories: string[]) => void;
   onSortChange: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+  isNavOpen: boolean;
+  setIsNavOpen: (isOpen: boolean) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -21,19 +22,22 @@ const Navbar: React.FC<NavbarProps> = ({
   onChange,
   onCategoryChange,
   onSortChange,
+  isNavOpen,
+  setIsNavOpen,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
   const [user, setUser] = useState<{ username: string; email: string } | null>(
     null,
   );
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([
+    'All',
+  ]);
   const [selectedSort, setSelectedSort] = useState<{
     sortBy: string;
     sortOrder: 'asc' | 'desc';
   }>({
-    sortBy: 'created_at',
+    sortBy: 'modified_at',
     sortOrder: 'desc',
   });
 
@@ -69,31 +73,45 @@ const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   useEffect(() => {
-    setIsOpen(false);
+    setIsNavOpen(false);
   }, [location]);
 
   const toggleNav = () => {
-    setIsOpen(!isOpen);
+    setIsNavOpen(!isNavOpen);
   };
 
   const handleCategoryCheckboxChange = (category: string) => {
-    const updatedCategories = selectedCategories.includes(category)
-      ? selectedCategories.filter((c) => c !== category)
-      : [...selectedCategories, category];
+    let updatedCategories;
+    if (category === 'All') {
+      updatedCategories = ['All'];
+    } else {
+      updatedCategories = selectedCategories.includes(category)
+        ? selectedCategories.filter((c) => c !== category && c !== 'All')
+        : [...selectedCategories.filter((c) => c !== 'All'), category];
+    }
     setSelectedCategories(updatedCategories);
-    onCategoryChange(updatedCategories);
   };
 
   const handleSortRadioChange = (sortBy: string, sortOrder: 'asc' | 'desc') => {
     setSelectedSort({ sortBy, sortOrder });
-    onSortChange(sortBy, sortOrder);
+  };
+
+  const handleApplyFilters = () => {
+    // If "All" is selected, pass an empty array to fetch all categories
+    const categoriesToSend = selectedCategories.includes('All')
+      ? []
+      : selectedCategories;
+    onCategoryChange(categoriesToSend);
+    onSortChange(selectedSort.sortBy, selectedSort.sortOrder);
+    setIsNavOpen(false);
   };
 
   const handleResetFilters = () => {
-    setSelectedCategories([]);
-    setSelectedSort({ sortBy: 'created_at', sortOrder: 'desc' });
+    setSelectedCategories(['All']);
+    setSelectedSort({ sortBy: 'modified_at', sortOrder: 'desc' });
     onCategoryChange([]);
-    onSortChange('created_at', 'desc');
+    onSortChange('modified_at', 'desc');
+    setIsNavOpen(false);
   };
 
   return (
@@ -112,13 +130,17 @@ const Navbar: React.FC<NavbarProps> = ({
 
           <div className="flex items-center justify-end gap-2">
             <div className="flex w-full min-w-96">
-              <SearchBar value={value} onChange={onChange} />
+              <SearchBar
+                value={value}
+                onChange={onChange}
+                setNavOpen={setIsNavOpen}
+              />
             </div>
             <button
               className="group flex h-12 items-center gap-4 rounded-full border border-amber-400 bg-amber-400 py-1 pl-5 pr-1.5 text-dark"
               onClick={toggleNav}
             >
-              {isOpen ? (
+              {isNavOpen ? (
                 <IoMdClose className="scale-150 text-base" />
               ) : (
                 <TbMenu2 className="scale-150 text-base" />
@@ -137,14 +159,14 @@ const Navbar: React.FC<NavbarProps> = ({
       <div className={`relative`}>
         <div
           className={`transition-700 fixed inset-0 z-30 backdrop-blur ${
-            isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+            isNavOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
           onClick={toggleNav}
         />
 
         <div
           className={`fixed right-4 top-[5.5rem] h-fit w-80 rounded-2xl border bg-white p-3 transition-all duration-700 ease-in-out ${
-            isOpen ? 'translate-x-0' : 'translate-x-[125%]'
+            isNavOpen ? 'translate-x-0' : 'translate-x-[125%]'
           } ${visible ? 'opacity-100' : '-translate-y-[150%]'} z-30`}
         >
           <div className="space-y-4">
@@ -171,7 +193,11 @@ const Navbar: React.FC<NavbarProps> = ({
               </li>
             </ul>
 
-            <SearchBar value={value} onChange={onChange} />
+            <SearchBar
+              value={value}
+              onChange={onChange}
+              setNavOpen={setIsNavOpen}
+            />
             <hr />
 
             <div className="p-2">
@@ -245,14 +271,15 @@ const Navbar: React.FC<NavbarProps> = ({
             <div className="flex items-center justify-between gap-3">
               <button
                 type="button"
-                className="w-full rounded-md bg-amber-400 py-2 text-sm font-medium text-white"
+                onClick={handleApplyFilters}
+                className="transition-200 w-full rounded-md border-2 border-amber-400 bg-amber-400 py-2 text-sm font-medium text-dark hover:bg-amber-100 hover:text-amber-500"
               >
                 Apply Filters
               </button>
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="w-full rounded-md border border-amber-400 py-2 text-sm font-medium text-amber-400"
+                className="transition-200 w-full rounded-md border-2 border-amber-300 bg-amber-100 py-2 text-sm font-medium text-dark hover:bg-amber-200 hover:text-dark"
               >
                 Reset Filters
               </button>

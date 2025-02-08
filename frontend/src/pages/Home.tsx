@@ -17,6 +17,8 @@ import { NoteProps } from '../interfaces/types';
 import moment from 'moment';
 
 interface HomeProps {
+  notes: NoteProps[];
+  setNotes: React.Dispatch<React.SetStateAction<NoteProps[]>>;
   page: number;
   total: number;
   limit: number;
@@ -25,13 +27,14 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({
+  notes,
+  setNotes,
   page,
   total,
   limit,
   onPageChange,
   search,
 }) => {
-  const [notes, setNotes] = useState<NoteProps[]>([]);
   const [selectedNote, setSelectedNote] = useState<NoteProps | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingNewNote, setIsCreatingNewNote] = useState(false);
@@ -168,15 +171,16 @@ const Home: React.FC<HomeProps> = ({
     setIsEditing(false);
   };
 
-  // Sort notes by pinned status and created date
-  const sortedNotes = [...notes].sort((a, b) => {
-    if (a.isPinned === b.isPinned) {
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-    }
-    return a.isPinned ? -1 : 1;
-  });
+  // Sort notes by pinned status and others as the same order they were sent from the App component
+  // const sortedNotes = [...notes].sort((a, b) => {
+  //   if (a.isPinned && !b.isPinned) {
+  //     return -1;
+  //   }
+  //   if (!a.isPinned && b.isPinned) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // });
 
   return (
     <>
@@ -188,17 +192,19 @@ const Home: React.FC<HomeProps> = ({
             ))}
           </section>
         </main>
-      ) : sortedNotes.length > 0 ? (
+      ) : notes.length > 0 ? (
         <main>
           {/* <span className="text-base text-dark p-3 inline-block">
             {total} {total === 1 ? 'note' : 'notes'} found.
           </span> */}
           <section className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4">
-            {sortedNotes.map((note) => (
+          {/* <section className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"> */}
+            {notes.map((note) => (
               <NotesCard
                 key={note.id}
                 id={note.id}
                 title={note.title}
+                // title={note.isPinned ? "Pinned" : "Unpinned"}
                 content={note.content}
                 categories={note.categories}
                 isPinned={note.isPinned}
