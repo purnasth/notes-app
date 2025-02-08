@@ -49,7 +49,7 @@ const Home: React.FC<HomeProps> = ({
         const response = await getNotes(
           search,
           [],
-          'created_at',
+          'modified_at',
           'desc',
           page,
           limit,

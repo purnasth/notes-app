@@ -11,7 +11,7 @@ const Error404: React.FC<Error404Props> = ({ message }) => {
       <img
         src={error}
         alt="Error 404"
-        className="mb-5 mt-8 w-96 max-w-md select-none md:w-1/2"
+        className="mb-5 mt-8 w-96 max-w-md select-none md:w-full md:max-w-lg"
         draggable="false"
       />
       {/* <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>

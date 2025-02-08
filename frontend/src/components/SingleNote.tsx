@@ -187,29 +187,31 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                 Categories
               </label>
               <div className="mt-2 flex flex-wrap gap-3">
-                {['work', 'personal', 'urgent'].map((tag) => (
-                  <label key={tag} className="flex items-center gap-1">
-                    <input
-                      type="checkbox"
-                      className="accent-amber-400"
-                      checked={watch('categories')?.includes(tag)}
-                      onChange={(e) => {
-                        const currentCategories = watch('categories') || [];
-                        if (e.target.checked) {
-                          setValue('categories', [...currentCategories, tag]);
-                        } else {
-                          setValue(
-                            'categories',
-                            currentCategories.filter((t) => t !== tag),
-                          );
-                        }
-                      }}
-                    />
-                    <span className="select-none text-sm capitalize">
-                      {tag}
-                    </span>
-                  </label>
-                ))}
+                {['work', 'personal', 'study', 'reminder', 'ideas'].map(
+                  (tag) => (
+                    <label key={tag} className="flex items-center gap-1">
+                      <input
+                        type="checkbox"
+                        className="accent-amber-400"
+                        checked={watch('categories')?.includes(tag)}
+                        onChange={(e) => {
+                          const currentCategories = watch('categories') || [];
+                          if (e.target.checked) {
+                            setValue('categories', [...currentCategories, tag]);
+                          } else {
+                            setValue(
+                              'categories',
+                              currentCategories.filter((t) => t !== tag),
+                            );
+                          }
+                        }}
+                      />
+                      <span className="select-none text-sm capitalize">
+                        {tag}
+                      </span>
+                    </label>
+                  ),
+                )}
               </div>
             </div>
             <hr />

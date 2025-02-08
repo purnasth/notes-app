@@ -32,7 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({
     null,
   );
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
-    'All',
+    'all',
   ]);
   const [selectedSort, setSelectedSort] = useState<{
     sortBy: string;
@@ -83,12 +83,12 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const handleCategoryCheckboxChange = (category: string) => {
     let updatedCategories;
-    if (category === 'All') {
-      updatedCategories = ['All'];
+    if (category === 'all') {
+      updatedCategories = ['all'];
     } else {
       updatedCategories = selectedCategories.includes(category)
-        ? selectedCategories.filter((c) => c !== category && c !== 'All')
-        : [...selectedCategories.filter((c) => c !== 'All'), category];
+        ? selectedCategories.filter((c) => c !== category)
+        : [...selectedCategories.filter((c) => c !== 'all'), category];
     }
     setSelectedCategories(updatedCategories);
   };
@@ -98,8 +98,8 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleApplyFilters = () => {
-    // If "All" is selected, pass an empty array to fetch all categories
-    const categoriesToSend = selectedCategories.includes('All')
+    // If "all" is selected, pass an empty array to fetch all categories
+    const categoriesToSend = selectedCategories.includes('all')
       ? []
       : selectedCategories;
     onCategoryChange(categoriesToSend);
@@ -108,7 +108,7 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleResetFilters = () => {
-    setSelectedCategories(['All']);
+    setSelectedCategories(['all']);
     setSelectedSort({ sortBy: 'modified_at', sortOrder: 'desc' });
     onCategoryChange([]);
     onSortChange('modified_at', 'desc');
@@ -207,23 +207,28 @@ const Navbar: React.FC<NavbarProps> = ({
                 <TbCategory2 className="ml-1 inline-block text-base" />
               </h3>
               <ul className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-0 text-dark">
-                {['All', 'Work', 'Personal', 'Study'].map((category) => (
-                  <li key={category} className="group flex items-center gap-1">
-                    <input
-                      type="checkbox"
-                      id={`category-${category.toLowerCase()}`}
-                      checked={selectedCategories.includes(category)}
-                      onChange={() => handleCategoryCheckboxChange(category)}
-                      className="accent-amber-400"
-                    />
-                    <label
-                      htmlFor={`category-${category.toLowerCase()}`}
-                      className="select-none text-sm"
+                {['all', 'work', 'personal', 'study', 'remainder', 'ideas'].map(
+                  (category) => (
+                    <li
+                      key={category}
+                      className="group flex items-center gap-1"
                     >
-                      {category}
-                    </label>
-                  </li>
-                ))}
+                      <input
+                        type="checkbox"
+                        id={`category-${category.toLowerCase()}`}
+                        checked={selectedCategories.includes(category)}
+                        onChange={() => handleCategoryCheckboxChange(category)}
+                        className="accent-amber-400"
+                      />
+                      <label
+                        htmlFor={`category-${category.toLowerCase()}`}
+                        className="select-none text-sm capitalize"
+                      >
+                        {category}
+                      </label>
+                    </li>
+                  ),
+                )}
               </ul>
             </div>
 
