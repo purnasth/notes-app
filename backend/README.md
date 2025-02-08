@@ -22,8 +22,8 @@ pnpm init
 Install dependencies:
 
 ```bash
-pnpm install express pg cors bcryptjs jsonwebtoken dotenv cookie-parser
-pnpm install --save-dev typescript @types/node @types/express @types/cors ts-node nodemon @types/pg @types/bcryptjs @types/jsonwebtoke @types/cookie-parser
+pnpm install express pg cors bcryptjs jsonwebtoken dotenv cookie-parser moment
+pnpm install --save-dev typescript @types/node @types/express @types/cors ts-node nodemon @types/pg @types/bcryptjs @types/jsonwebtoke @types/cookie-parser @types/moment
 ```
 
 `Note:` express is a web framework for Node.js, pg is a PostgreSQL client, cors is a middleware for enabling CORS with various options, bcryptjs is a library for hashing passwords, jsonwebtoken is a library for generating JWTs, and dotenv is a library for loading environment variables from a .env file.
@@ -194,6 +194,18 @@ CREATE TABLE sessions (
   session_token VARCHAR(255) NOT NULL UNIQUE,
   expires_at TIMESTAMP NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create notes table
+CREATE TABLE notes (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    categories VARCHAR(255)[],
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_pinned BOOLEAN DEFAULT false,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE
 );
 ```
 
@@ -595,3 +607,173 @@ Response:
 - d. Internal server error (Database error)
   - **Status**: `500 Internal Server Error`
   - **Response**: `{"error": "Internal server error"}`
+
+7. Search notes
+
+- **GET** `http://localhost:5000/api/notes/search=<query>`
+- **Purpose:** Search notes based on the query string.
+- **Example:** `http://localhost:5000/api/notes?search=test
+
+Request headers:
+
+```json
+{
+  "Authorization": `Bearer <JWT_TOKEN>`
+} 
+
+`Note:` For adding the `bearer token` in the `Authorization` header, open `Auth Type` dropdown and select `Bearer Token` and paste your above copied `JWT token`.
+
+Response:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Test Note",
+    "content": "This is a test note",
+    "categories": [
+        "work",
+        "personal"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  }
+]
+```
+
+8. Sort By Created Date
+
+- **GET** `http://localhost:5000/api/notes?sortBy=created_at&sortOrder=desc`
+- **Purpose:** Sort notes by created date in descending order.
+
+Request headers:
+
+```json
+{
+  "Authorization": `Bearer <JWT_TOKEN>`
+}
+```
+
+Response:
+
+```json
+[
+  {
+    "id": 2,
+    "title": "Another Note",
+    "content": "This is another note",
+    "categories": [
+        "work"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": true,
+    "user_id": 2
+  },
+  {
+    "id": 1,
+    "title": "Test Note",
+    "content": "This is a test note",
+    "categories": [
+        "work",
+        "personal"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  }
+]
+```
+
+9. Sort by Alphabetical Order
+
+- **GET** `http://localhost:5000/api/notes?sortBy=title&sortOrder=asc`
+- **Purpose:** Sort notes by title in ascending order.
+
+Request headers:
+
+```json
+{
+  "Authorization": `Bearer <JWT_TOKEN>`
+}
+```
+
+Response:
+
+```json
+[
+  {
+    "id": 2,
+    "title": "Another Note",
+    "content": "This is another note",
+    "categories": [
+        "work"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": true,
+    "user_id": 2
+  },
+  {
+    "id": 1,
+    "title": "Test Note",
+    "content": "This is a test note",
+    "categories": [
+        "work",
+        "personal"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  }
+]
+```
+
+10. Pagination
+
+- **GET** `http://localhost:5000/api/notes?page=2&limit=2`
+- **Purpose:** Fetch notes with pagination.
+
+Request headers:
+
+```json
+{
+  "Authorization": `Bearer <JWT_TOKEN>`
+}
+```
+
+Response:
+
+```json
+[
+  {
+    "id": 3,
+    "title": "Updated Note Title: from CRUD update",
+    "content": "This is the updated content",
+    "categories": [
+        "work",
+        "CRUD"
+    ],
+    "created_at": "2025-02-03T20:14:28.460Z",
+    "modified_at": "2025-02-03T20:18:54.365Z",
+    "is_pinned": true,
+    "user_id": 2
+  },
+  {
+    "id": 4,
+    "title": "New Note",
+    "content": "This is a new note",
+    "categories": [
+        "work"
+    ],
+    "created_at": "2025-02-03T20:03:22.614Z",
+    "modified_at": "2025-02-03T20:03:22.614Z",
+    "is_pinned": false,
+    "user_id": 2
+  }
+]
+```

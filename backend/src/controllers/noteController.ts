@@ -39,7 +39,18 @@ export const getNotes: express.RequestHandler = async (
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
-    const notes = await NoteModel.findAllByUser(userId);
+
+    const { search, categories, sortBy, sortOrder, page, limit } = req.query;
+    const notes = await NoteModel.findNotes(
+      userId,
+      search as string,
+      categories as string[],
+      sortBy as string,
+      sortOrder as 'asc' | 'desc',
+      page ? parseInt(page as string, 10) : undefined,
+      limit ? parseInt(limit as string, 10) : undefined
+    );
+
     res.json(notes);
   } catch (error) {
     console.error(error);

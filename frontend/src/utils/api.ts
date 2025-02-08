@@ -85,9 +85,35 @@ export const createNote = async (note: {
 };
 
 // Fetch all notes
-export const getNotes = async () => {
-  const response = await axios.get(`${API_BASE_URL}/notes`);
-  return response.data;
+export const getNotes = async (
+  search?: string,
+  categories?: string[],
+  sortBy?: string,
+  sortOrder?: 'asc' | 'desc',
+  page?: number,
+  limit?: number,
+) => {
+  const response = await axios.get(`${API_BASE_URL}/notes`, {
+    params: {
+      search,
+      categories,
+      sortBy,
+      sortOrder,
+      page,
+      limit,
+    },
+  });
+
+  // Transform snake_case to camelCase for all notes
+  const transformedNotes = response.data.notes.map((note: any) => ({
+    ...note,
+    isPinned: note.is_pinned, // Map is_pinned to isPinned
+  }));
+
+  return {
+    ...response.data,
+    notes: transformedNotes, // Return the transformed notes
+  };
 };
 
 // Update a note
@@ -111,7 +137,10 @@ export const deleteNote = async (id: string) => {
 // Toggle pin status
 export const togglePin = async (id: string) => {
   const response = await axios.patch(`${API_BASE_URL}/notes/${id}/pin`, {});
-  return response.data;
+  return {
+    ...response.data,
+    isPinned: response.data.is_pinned, // Transform snake_case to camelCase
+  };
 };
 
 // Fetch all categories

@@ -4,7 +4,8 @@ import { NoteProps } from '../../interfaces/types';
 
 const NotesCard = ({
   title,
-  date,
+  created_at,
+  modified_at,
   content,
   categories,
   isPinned,
@@ -21,7 +22,10 @@ const NotesCard = ({
       >
         <div>
           <h3 className="font-body text-lg font-semibold">{title}</h3>
-          <p className="text-pretty text-sm">{date}</p>
+          <p className="text-xs">
+            {modified_at ? `Last modified: ${modified_at}` : `Created: ${created_at}`}
+            {/* {created_at ? `Created: ${created_at}` : `Last modified: ${modified_at}`} */}
+          </p>
         </div>
         <p className="line-clamp-4 text-pretty">{content}</p>
         <div>

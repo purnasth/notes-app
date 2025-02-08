@@ -1,119 +1,71 @@
 import React, { useEffect, useState } from 'react';
 import NotesCard from '../components/ui/NotesCard';
 import Pagination from '../components/ui/Pagination';
+import SkeletonLoader from '../components/ui/SkeletonLoader';
 import { IoAddOutline } from 'react-icons/io5';
 import SingleNote from '../components/SingleNote';
 import Error404 from '../layouts/Error404';
 import { toast } from 'react-toastify';
-import Navbar from '../layouts/Navbar';
-import { getNotes, createNote, updateNote, deleteNote } from '../utils/api';
+import {
+  getNotes,
+  createNote,
+  updateNote,
+  deleteNote,
+  togglePin,
+} from '../utils/api';
 import { NoteProps } from '../interfaces/types';
+import moment from 'moment';
 
-// const initialNotes = [
-//   {
-//     id: '1',
-//     title: 'Interview for Associate Engineer',
-//     date: new Date().toDateString(),
-//     content:
-//       'The interview will be conducted by Leapfrog Technology for the position of Associate Software Engineer. The interview will be conducted in two rounds. The first round will be a written test and the second round will be a technical interview. On the first round, the written test is about the notes-app development. The notes-app is built with a PERN stack; PostgreSQL, Express, React, and Node.js.',
-//     categories: ['interview', 'leapfrog', 'associate engineer'],
-//     isPinned: true,
-//   },
-//   {
-//     id: '2',
-//     title: 'On Boarding after Hiring',
-//     date: new Date().toDateString(),
-//     content:
-//       'After hiring, the onboarding process will start. The onboarding process will be conducted by the HR department. The onboarding process will include the introduction of the company, the introduction of the team, the introduction of the project, the introduction of the tools, and the introduction of the company policies.',
-//     categories: ['onboarding', 'hiring'],
-//     isPinned: false,
-//   },
-//   {
-//     id: '3',
-//     title: 'Board Exam Routine',
-//     date: new Date().toDateString(),
-//     content:
-//       'The routine of the board exam has been published. The exam will start from 1st January 2022. The exam will be conducted in two shifts. The first shift will start at 9 AM and the second shift will start at 2 PM. The exam will be conducted in offline mode.',
-//     categories: ['exam', 'board exam', 'routine'],
-//     isPinned: false,
-//   },
-//   {
-//     id: '4',
-//     title: 'Marvel: Doomsday',
-//     date: new Date().toDateString(),
-//     content:
-//       'The Marvel movie "Doomsday" has been released. The movie is about the end of the world. The movie is directed by Steven Spielberg. The movie has a rating of 4.5 out of 5. The movie has been released in 4K resolution.',
-//     categories: ['movie', 'marvel', 'doomsday'],
-//     isPinned: false,
-//   },
-//   {
-//     id: '5',
-//     title: 'Chess Tournament',
-//     date: new Date().toDateString(),
-//     content:
-//       'The chess tournament will be conducted in the school. The tournament will start from 1st February 2022. The tournament will be conducted in two categories. The first category will be for juniors and the second category will be for seniors. The tournament will be conducted in offline mode.',
-//     categories: ['chess', 'tournament'],
-//     isPinned: false,
-//   },
-//   {
-//     id: '6',
-//     title: 'Portfolio Design',
-//     date: new Date().toDateString(),
-//     content:
-//       'The portfolio design has been completed. The portfolio is designed with a minimalist design. The portfolio is designed with a dark theme. The portfolio is designed with a responsive design. The portfolio is designed with a mobile-first approach.',
-//     categories: ['portfolio', 'design'],
-//     isPinned: false,
-//   },
-//   {
-//     id: '7',
-//     title: 'React Native Workshop',
-//     date: new Date().toDateString(),
-//     content:
-//       'The React Native workshop will be conducted by the IT Club. The workshop will start from 1st March 2022. The workshop will be conducted in two sessions. The first session will be about the introduction of React Native and the second session will be about the hands-on workshop.',
-//     categories: ['workshop', 'react native', 'it club'],
-//     isPinned: false,
-//   },
-//   {
-//     id: '8',
-//     title: 'Web Development Bootcamp',
-//     date: new Date().toDateString(),
-//     content:
-//       'The web development bootcamp will be conducted by the Computer Club. The bootcamp will start from 1st April 2022. The bootcamp will be conducted in two phases. The first phase will be about the front-end development and the second phase will be about the back-end development.',
-//     categories: ['bootcamp', 'web development', 'computer club'],
-//     isPinned: false,
-//   },
-//   {
-//     id: '9',
-//     title: 'Hackathon Event',
-//     date: new Date().toDateString(),
-//     content:
-//       'The hackathon event will be conducted by the Programming Club. The event will start from 1st May 2022. The event will be conducted in two categories. The first category will be for juniors and the second category will be for seniors. The event will be conducted in offline mode.',
-//     categories: ['hackathon', 'event', 'programming club'],
-//     isPinned: false,
-//   },
-// ];
+interface HomeProps {
+  notes: NoteProps[];
+  setNotes: React.Dispatch<React.SetStateAction<NoteProps[]>>;
+  page: number;
+  total: number;
+  limit: number;
+  onPageChange: (newPage: number) => void;
+  search: string;
+}
 
-const Home: React.FC = () => {
-  const [notes, setNotes] = useState<NoteProps[]>([]);
-  const [selectedNote, setSelectedNote] = useState<(typeof notes)[0] | null>(
-    null,
-  );
+const Home: React.FC<HomeProps> = ({
+  notes,
+  setNotes,
+  page,
+  total,
+  limit,
+  onPageChange,
+  search,
+}) => {
+  const [selectedNote, setSelectedNote] = useState<NoteProps | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingNewNote, setIsCreatingNewNote] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
-  // Fetch notes on component mount
+  // Fetch notes on component mount and when page or search changes
   useEffect(() => {
     const fetchNotes = async () => {
+      setIsLoading(true); // Set loading to true before fetching
       try {
-        const data = await getNotes();
-        setNotes(data);
+        const response = await getNotes(
+          search,
+          [],
+          'modified_at',
+          'desc',
+          page,
+          limit,
+        );
+        const notesArray = Array.isArray(response?.notes) ? response.notes : [];
+        setNotes(notesArray);
       } catch (error) {
         toast.error('Failed to fetch notes');
+        setNotes([]);
+      } finally {
+        setIsLoading(false); // Set loading to false after fetching
       }
     };
+
     fetchNotes();
-  }, []);
+  }, [page, search, limit]);
 
   // Handle note creation
   const handleCreateNote = async (note: {
@@ -123,7 +75,7 @@ const Home: React.FC = () => {
   }) => {
     try {
       const newNote = await createNote(note);
-      setNotes([...notes, newNote]);
+      setNotes((prevNotes) => [...prevNotes, newNote]);
       toast.success('Note created successfully!');
       setIsModalOpen(false);
     } catch (error) {
@@ -142,7 +94,9 @@ const Home: React.FC = () => {
         content: updatedNote.content || '',
         categories: updatedNote.categories || [],
       });
-      setNotes(notes.map((n) => (n.id === id ? note : n)));
+      setNotes((prevNotes) =>
+        prevNotes.map((n) => (n.id === id ? { ...n, ...note } : n)),
+      );
       toast.success('Note updated successfully!');
       setIsModalOpen(false);
     } catch (error) {
@@ -154,7 +108,7 @@ const Home: React.FC = () => {
   const handleDeleteNote = async (id: string) => {
     try {
       await deleteNote(id);
-      setNotes(notes.filter((note) => note.id !== id));
+      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
       toast.success('Note deleted successfully!');
       setIsModalOpen(false);
     } catch (error) {
@@ -162,7 +116,33 @@ const Home: React.FC = () => {
     }
   };
 
-  const handleNoteClick = (note: (typeof notes)[0]) => {
+  // Handle pin toggle
+  const handlePin = async (noteId: string) => {
+    try {
+      const updatedNote = await togglePin(noteId);
+
+      // Update the notes state with the new pin status
+      setNotes((prevNotes) =>
+        prevNotes.map((note) =>
+          note.id === noteId
+            ? { ...note, isPinned: updatedNote.isPinned } // Update the pin status
+            : note,
+        ),
+      );
+
+      // Display the correct toast message
+      toast.success(
+        updatedNote.isPinned
+          ? 'Note pinned successfully!'
+          : 'Note unpinned successfully!',
+      );
+    } catch (error) {
+      toast.error('Failed to toggle pin status');
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleNoteClick = (note: NoteProps) => {
     setSelectedNote(note);
     setIsModalOpen(true);
     setIsCreatingNewNote(false);
@@ -176,7 +156,7 @@ const Home: React.FC = () => {
     setIsEditing(false);
   };
 
-  const handleEditNoteClick = (note: (typeof notes)[0]) => {
+  const handleEditNoteClick = (note: NoteProps) => {
     setSelectedNote(note);
     setIsModalOpen(true);
     setIsCreatingNewNote(false);
@@ -190,61 +170,72 @@ const Home: React.FC = () => {
     setIsEditing(false);
   };
 
-  const handlePin = (noteId: string) => {
-    const updatedNotes = notes.map((note) =>
-      note.id === noteId ? { ...note, isPinned: !note.isPinned } : note,
-    );
-    setNotes(updatedNotes);
-    toast.success(
-      updatedNotes.find((note) => note.id === noteId)?.isPinned
-        ? 'Note pinned successfully!'
-        : 'Note unpinned successfully!',
-    );
-    handleCloseModal();
-  };
-
-  // Sort notes by pinned status and created date
-  const sortedNotes = notes.sort((a, b) => {
-    if (a.isPinned === b.isPinned) {
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-    }
-    return a.isPinned ? -1 : 1;
-  });
+  // Sort notes by pinned status and others as the same order they were sent from the App component
+  // const sortedNotes = [...notes].sort((a, b) => {
+  //   if (a.isPinned && !b.isPinned) {
+  //     return -1;
+  //   }
+  //   if (!a.isPinned && b.isPinned) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // });
 
   return (
     <>
-      <Navbar />
-      {notes.length < 1 ? (
-        <Error404
-          message={`Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`}
-        />
-      ) : (
+      {isLoading ? (
         <main>
-          <section className="transition-linear w-fit columns-1 sm:columns-2 md:gap-4 lg:columns-2 xl:columns-3 2xl:columns-4">
-            {sortedNotes.map((note) => (
+          <section className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4">
+            {Array.from({ length: limit }).map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </section>
+        </main>
+      ) : notes.length > 0 ? (
+        <main>
+          {/* <span className="text-base text-dark p-3 inline-block">
+            {total} {total === 1 ? 'note' : 'notes'} found.
+          </span> */}
+          <section className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4">
+          {/* <section className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"> */}
+            {notes.map((note) => (
               <NotesCard
                 key={note.id}
                 id={note.id}
                 title={note.title}
-                // date={note.date}
-                date={selectedNote?.created_at || new Date().toDateString()}
+                // title={note.isPinned ? "Pinned" : "Unpinned"}
                 content={note.content}
                 categories={note.categories}
                 isPinned={note.isPinned}
-                created_at={note.created_at}
+                created_at={moment(note.created_at).format(
+                  'h:mm A, MMM DD, YYYY',
+                )}
+                modified_at={moment(note.modified_at).format(
+                  'h:mm A, MMM DD, YYYY',
+                )}
                 user_id={note.user_id}
                 onEdit={() => handleEditNoteClick(note)}
-                onDelete={() => note && handleDeleteNote(note.id)}
+                onDelete={() => handleDeleteNote(note.id)}
                 onPin={() => handlePin(note.id)}
                 onClick={() => handleNoteClick(note)}
                 onClose={handleCloseModal}
               />
             ))}
           </section>
-          <Pagination />
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(total / limit)}
+            onPageChange={onPageChange}
+          />
         </main>
+      ) : (
+        <Error404
+          message={
+            search
+              ? `Oops! No notes found for "${search}".`
+              : `Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`
+          }
+        />
       )}
       <button
         onClick={handleAddNoteClick}
@@ -256,20 +247,20 @@ const Home: React.FC = () => {
       {isModalOpen && (
         <SingleNote
           id={selectedNote?.id || ''}
-          created_at={selectedNote?.created_at || new Date().toDateString()}
+          created_at={moment(selectedNote?.created_at).format(
+            'h:mm A, MMM DD, YYYY',
+          )}
           user_id={selectedNote?.user_id || ''}
           title={selectedNote?.title || ''}
-          date={selectedNote?.created_at || new Date().toDateString()}
+          modified_at={moment(selectedNote?.modified_at).format(
+            'h:mm A, MMM DD, YYYY',
+          )}
           content={selectedNote?.content || ''}
           categories={selectedNote?.categories || []}
           isPinned={selectedNote?.isPinned || false}
-          onClose={() => setIsModalOpen(false)}
-          onEdit={() => {
-            setSelectedNote(selectedNote);
-            setIsEditing(true);
-          }}
+          onClose={handleCloseModal}
+          onEdit={() => setIsEditing(true)}
           onDelete={() => selectedNote && handleDeleteNote(selectedNote.id)}
-          // onPin={() => selectedNote && handlePinNote(selectedNote.id)}
           onPin={() => selectedNote && handlePin(selectedNote.id)}
           isCreatingNewNote={isCreatingNewNote}
           isEditing={isEditing}
@@ -278,14 +269,14 @@ const Home: React.FC = () => {
               handleCreateNote({
                 ...data,
                 categories: (data.categories || []).filter(
-                  (category): category is string => !!category,
+                  (category): category is string => category !== undefined,
                 ),
               });
             } else if (selectedNote) {
               handleUpdateNote(selectedNote.id, {
                 ...data,
                 categories: (data.categories || []).filter(
-                  (category): category is string => !!category,
+                  (category): category is string => category !== undefined,
                 ),
               });
             }
