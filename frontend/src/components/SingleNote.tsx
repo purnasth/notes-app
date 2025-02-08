@@ -7,8 +7,30 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from './ui/Modal';
-import { noteSchema } from '../utils/validationSchemas';
+// import { noteSchema } from '../utils/validationSchemas';
 import { NoteProps } from '../interfaces/types';
+import { Profanity } from '@2toad/profanity';
+
+const profanity = new Profanity();
+
+// profanity.addWords([]); // Add Nepali profanity words
+
+// Validation schema
+const noteSchema = yup.object({
+  title: yup
+    .string()
+    .required('Title is required')
+    .test('no-profanity', 'Contains inappropriate language', (value) => {
+      return !profanity.exists(value || '');
+    }),
+  content: yup
+    .string()
+    .required('Content is required')
+    .test('no-profanity', 'Contains inappropriate language', (value) => {
+      return !profanity.exists(value || '');
+    }),
+  categories: yup.array().of(yup.string()),
+});
 
 type NoteFormData = yup.InferType<typeof noteSchema>;
 
@@ -165,7 +187,6 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                         : ''
                     }`}
                     rows={field.rows}
-                    // maxLength={field.maxLength}
                   />
                 ) : (
                   <input
@@ -177,7 +198,6 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                         ? 'border-red-500 placeholder:text-red-500'
                         : ''
                     }`}
-                    // maxLength={field.maxLength}
                   />
                 )}
               </div>
