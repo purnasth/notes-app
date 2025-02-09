@@ -46,7 +46,7 @@ export const getNotes: express.RequestHandler = async (
       search as string,
       categories as string[],
       sortBy as string,
-      sortOrder as 'asc' | 'desc',
+      sortOrder as "asc" | "desc",
       page ? parseInt(page as string, 10) : undefined,
       limit ? parseInt(limit as string, 10) : undefined
     );
@@ -110,7 +110,7 @@ export const togglePin: express.RequestHandler = async (
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
-    const note = await NoteModel.togglePin(Number(id));
+    const note = await NoteModel.togglePin(Number(id), userId);
     res.json(note);
   } catch (error) {
     console.error(error);

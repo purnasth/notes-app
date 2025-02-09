@@ -34,14 +34,15 @@ export class NoteModel {
     await pool.query("DELETE FROM notes WHERE id = $1", [id]);
   }
 
-  static async togglePin(id: number): Promise<Note> {
+  static async togglePin(id: number, userId: number): Promise<Note | null> {
     const { rows } = await pool.query(
       `UPDATE notes 
-       SET is_pinned = NOT is_pinned 
-       WHERE id = $1 RETURNING *`,
-      [id]
+       SET is_pinned = CASE WHEN is_pinned THEN FALSE ELSE TRUE END 
+       WHERE id = $1 AND user_id = $2 
+       RETURNING *`,
+      [id, userId]
     );
-    return rows[0];
+    return rows.length > 0 ? rows[0] : null; // Return null if no row is updated
   }
 
   // Find notes with optional search, categories, sorting, pagination
@@ -91,7 +92,7 @@ export class NoteModel {
     }
 
     const { rows } = await pool.query(dataQuery, params);
-    
+
     console.log("Rows:", rows);
 
     return { notes: rows, total };

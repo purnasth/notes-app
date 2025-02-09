@@ -51,6 +51,8 @@ const Pagination: React.FC<PaginationProps> = ({
       typeof pageNumber === 'number' ? (
         <button
           key={index}
+          type="button"
+          aria-label={`Go to page ${pageNumber}`}
           onClick={() => onPageChange(pageNumber)}
           className={`transition-200 size-10 rounded-full border border-amber-400 ${
             currentPage === pageNumber ? 'bg-amber-400' : 'bg-amber-100'
@@ -73,6 +75,8 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="mt-16 flex items-center justify-center gap-8">
       <button
+        type="button"
+        aria-label="Go to previous page"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className="transition-200 group flex items-center gap-1 rounded-full border border-amber-400/0 py-1.5 pl-6 pr-4 uppercase hover:border hover:border-amber-400 hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
@@ -82,6 +86,8 @@ const Pagination: React.FC<PaginationProps> = ({
       </button>
       <div className="flex items-center gap-2">{renderPageNumbers()}</div>
       <button
+        type="button"
+        aria-label="Go to next page"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className="transition-200 group flex items-center gap-1 rounded-full border border-amber-400/0 py-1.5 pl-4 pr-6 uppercase hover:border hover:border-amber-400 hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"

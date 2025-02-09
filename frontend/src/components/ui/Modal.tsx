@@ -25,18 +25,19 @@ const Modal = ({ onClose, children }: ModalProps) => {
 
   return (
     <div
-      className={`transition-700 fixed inset-0 z-50 flex items-center justify-center bg-dark/70 backdrop-blur ${
+      className={`transition-700 fixed inset-0 z-50 flex size-full items-center justify-center bg-dark/70 backdrop-blur ${
         showModal ? 'opacity-100' : 'opacity-0'
       }`}
       onClick={closeWithAnimation}
     >
       <div
-        className={`transition-700 relative w-full max-w-xl transform bg-white p-10 shadow-lg ${
+        className={`transition-700 relative w-[90%] max-w-xl transform bg-white p-6 shadow-lg md:w-full md:p-10 ${
           showModal ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          type="button"
           onClick={closeWithAnimation}
           className="absolute right-5 top-5 text-xl text-dark"
           aria-label="Close"

@@ -29,5 +29,9 @@ export const noteSchema = yup.object().shape({
     .string()
     .required('Content is required*')
     .max(375, 'Content must be less than 375 characters'),
-  categories: yup.array().of(yup.string()),
+  // categories: yup.array().of(yup.string()),
+  categories: yup
+    .array()
+    .of(yup.string())
+    .min(1, 'At least one category is required*'),
 });

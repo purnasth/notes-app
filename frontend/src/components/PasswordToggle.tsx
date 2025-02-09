@@ -26,6 +26,7 @@ const PasswordToggle: React.FC<PasswordToggleProps> = ({ register }) => {
 
       <button
         type="button"
+        aria-label="Toggle show password"
         onClick={toggleShowPassword}
         className="absolute inset-y-0 right-0 flex items-center px-4"
       >

@@ -11,13 +11,13 @@ import human2 from '../assets/svg/human-2.svg';
 const About = () => {
   return (
     <>
-      <main className="flex h-screen flex-col items-center justify-center">
+      <main className="my-16 flex h-full flex-col items-center justify-center lg:my-0 lg:h-screen">
         <div className="relative mx-auto max-w-3xl 2xl:max-w-5xl">
           <div className="pointer-events-none absolute inset-0 -z-10 flex select-none items-start justify-start">
             <RiPenNibLine className="-z-10 text-6xl text-amber-400" />
             <RiPenNibLine className="absolute inset-0 -z-20 origin-center scale-150 animate-pulse text-6xl text-amber-400 opacity-10 blur-md" />
           </div>
-          <div className="pointer-events-auto absolute inset-0 top-1/3 -z-20 flex -translate-x-8 -translate-y-1/2 select-none items-end justify-end">
+          <div className="pointer-events-auto absolute inset-0 top-2/3 -z-20 flex -translate-x-8 -translate-y-1/2 select-none items-end justify-end md:top-1/3">
             <IoBulbOutline className="-z-10 text-6xl text-amber-400" />
             <IoBulbOutline className="absolute inset-0 -z-20 origin-center scale-150 animate-pulse text-6xl text-amber-400 blur-md" />
             <IoBulbOutline className="absolute bottom-0 -z-20 origin-center scale-150 animate-pulse text-6xl text-amber-400 blur-lg" />
@@ -27,10 +27,10 @@ const About = () => {
             <span className="rounded-full border-2 border-amber-500 px-3 py-1 text-sm font-medium uppercase text-amber-500">
               Notes App
             </span>
-            <h1 className="text-xl font-semibold leading-relaxed text-dark md:text-5xl md:leading-snug xl:text-6xl xl:leading-snug 2xl:text-6xl 2xl:leading-snug">
+            <h1 className="text-4xl font-semibold leading-tight text-dark md:text-5xl md:leading-snug xl:text-6xl xl:leading-snug 2xl:text-7xl 2xl:leading-snug">
               Write down your Every Task, Note, and Ideas as They Come to You
             </h1>
-            <p className="mx-auto w-4/5 px-4 text-sm md:text-base">
+            <p className="mx-auto w-full px-4 text-base md:w-4/5 md:text-base">
               Notes App is a simple note-taking app that allows you to jot down
               your thoughts and notes as they come to you. It's a great way to
               keep track of your ideas, to-do lists, and anything else you need
@@ -63,13 +63,13 @@ const About = () => {
         <img
           src={human1}
           alt="Add Task"
-          className="absolute bottom-0 left-0 -z-20 h-[60vh] w-auto object-contain mix-blend-darken"
+          className="absolute bottom-0 left-0 -z-20 h-24 w-auto object-contain mix-blend-darken md:h-64 lg:block lg:h-[60vh]"
           draggable="false"
         />
         <img
           src={human2}
           alt="Add Task"
-          className="absolute bottom-0 right-0 -z-20 h-[60vh] w-auto object-contain mix-blend-darken"
+          className="absolute bottom-0 right-0 -z-20 h-24 w-auto object-contain mix-blend-darken md:h-64 lg:block lg:h-[60vh]"
           draggable="false"
         />
       </main>

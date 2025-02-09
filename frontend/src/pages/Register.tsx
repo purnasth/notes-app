@@ -61,7 +61,7 @@ const Register = () => {
 
   return (
     <>
-      <main className="flex h-screen items-center justify-center">
+      <main className="flex h-full min-h-screen items-center justify-center">
         <div className="container max-w-md space-y-8">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {formFields.map((field) => (
@@ -97,6 +97,7 @@ const Register = () => {
             <div>
               <button
                 type="submit"
+                aria-label="Sign Up"
                 className="transition-300 flex w-full justify-center rounded-md bg-amber-400 px-4 py-2.5 text-base font-normal uppercase text-dark shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 md:text-lg"
               >
                 Sign Up

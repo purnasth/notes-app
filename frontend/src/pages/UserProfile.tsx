@@ -61,12 +61,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, notes }) => {
   return (
     <>
       <main className="relative h-screen">
-        <div className="container flex justify-around gap-12">
+        <div className="container flex flex-col justify-around gap-12 lg:flex-row">
           <div className="space-y-8">
             {/* <h1 className="mb-8 text-2xl capitalize">
               Welcome, {getFirstName(user.username)}!
             </h1> */}
-            <h1 className="text-2xl capitalize">
+            <h1 className="text-xl md:text-2xl capitalize">
               User Profile of {getFirstName(user.username)}!
             </h1>
             <div className="flex items-center justify-start gap-5">

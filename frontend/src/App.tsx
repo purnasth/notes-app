@@ -22,7 +22,7 @@ const App: React.FC = () => {
   const [sortBy, setSortBy] = useState('modified_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
-  const limit = 12;
+  const limit = 24;
   const [total, setTotal] = useState(0);
   const [notes, setNotes] = useState<NoteProps[]>([]);
   const [isNavOpen, setIsNavOpen] = useState(false);

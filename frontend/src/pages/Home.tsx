@@ -117,8 +117,17 @@ const Home: React.FC<HomeProps> = ({
   };
 
   // Handle pin toggle
+  // Handle pin toggle
   const handlePin = async (noteId: string) => {
     try {
+      const pinnedNotesCount = notes.filter((note) => note.isPinned).length;
+      const noteToPin = notes.find((note) => note.id === noteId);
+
+      if (noteToPin && !noteToPin.isPinned && pinnedNotesCount >= 8) {
+        toast.error('You can only pin up to 8 notes.');
+        return;
+      }
+
       const updatedNote = await togglePin(noteId);
 
       // Update the notes state with the new pin status
@@ -170,6 +179,11 @@ const Home: React.FC<HomeProps> = ({
     setIsEditing(false);
   };
 
+  const pinnedNotes = notes.filter((note) => note.isPinned);
+  const unpinnedNotes = notes.filter((note) => !note.isPinned);
+
+  // const sortedNotes = [...notes].sort((a, b) => (b.isPinned ? 1 : -1));
+
   // Sort notes by pinned status and others as the same order they were sent from the App component
   // const sortedNotes = [...notes].sort((a, b) => {
   //   if (a.isPinned && !b.isPinned) {
@@ -192,35 +206,80 @@ const Home: React.FC<HomeProps> = ({
           </section>
         </main>
       ) : notes.length > 0 ? (
-        <main>
+        <main className="z-auto">
           {/* <span className="text-base text-dark p-3 inline-block">
             {total} {total === 1 ? 'note' : 'notes'} found.
           </span> */}
-          <section className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4">
-          {/* <section className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"> */}
-            {notes.map((note) => (
-              <NotesCard
-                key={note.id}
-                id={note.id}
-                title={note.title}
-                // title={note.isPinned ? "Pinned" : "Unpinned"}
-                content={note.content}
-                categories={note.categories}
-                isPinned={note.isPinned}
-                created_at={moment(note.created_at).format(
-                  'h:mm A, MMM DD, YYYY',
-                )}
-                modified_at={moment(note.modified_at).format(
-                  'h:mm A, MMM DD, YYYY',
-                )}
-                user_id={note.user_id}
-                onEdit={() => handleEditNoteClick(note)}
-                onDelete={() => handleDeleteNote(note.id)}
-                onPin={() => handlePin(note.id)}
-                onClick={() => handleNoteClick(note)}
-                onClose={handleCloseModal}
-              />
-            ))}
+          <section className="space-y-10">
+            {/* <section className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"> */}
+            {pinnedNotes.length > 0 && (
+              <div>
+                <h2 className="mb-2 p-3 text-lg font-semibold text-dark md:text-lg">
+                  {pinnedNotes.length} Pinned{' '}
+                  {pinnedNotes.length === 1 ? 'Note' : 'Notes'}
+                </h2>
+                {/* <div className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4"> */}
+                <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                  {pinnedNotes.map((note) => (
+                    <NotesCard
+                      key={note.id}
+                      id={note.id}
+                      title={note.title}
+                      content={note.content}
+                      categories={note.categories}
+                      isPinned={note.isPinned}
+                      created_at={moment(note.created_at).format(
+                        'h:mm A, MMM DD, YYYY',
+                      )}
+                      modified_at={moment(note.modified_at).format(
+                        'h:mm A, MMM DD, YYYY',
+                      )}
+                      user_id={note.user_id}
+                      onEdit={() => handleEditNoteClick(note)}
+                      onDelete={() => handleDeleteNote(note.id)}
+                      onPin={() => handlePin(note.id)}
+                      onClick={() => handleNoteClick(note)}
+                      onClose={handleCloseModal}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Unpinned Notes Section */}
+            {unpinnedNotes.length > 0 && (
+              <div>
+                <h2 className="mb-2 p-3 text-lg font-semibold text-dark md:text-lg">
+                  {unpinnedNotes.length} Other{' '}
+                  {unpinnedNotes.length === 1 ? 'Note' : 'Notes'}
+                </h2>
+                {/* <div className="transition-linear w-full columns-1 gap-4 md:columns-2 lg:columns-3 2xl:columns-4"> */}
+                <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                  {unpinnedNotes.map((note) => (
+                    <NotesCard
+                      key={note.id}
+                      id={note.id}
+                      title={note.title}
+                      content={note.content}
+                      categories={note.categories}
+                      isPinned={note.isPinned}
+                      created_at={moment(note.created_at).format(
+                        'h:mm A, MMM DD, YYYY',
+                      )}
+                      modified_at={moment(note.modified_at).format(
+                        'h:mm A, MMM DD, YYYY',
+                      )}
+                      user_id={note.user_id}
+                      onEdit={() => handleEditNoteClick(note)}
+                      onDelete={() => handleDeleteNote(note.id)}
+                      onPin={() => handlePin(note.id)}
+                      onClick={() => handleNoteClick(note)}
+                      onClose={handleCloseModal}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
           <Pagination
             currentPage={page}
@@ -238,6 +297,8 @@ const Home: React.FC<HomeProps> = ({
         />
       )}
       <button
+        type="button"
+        aria-label="Add Note"
         onClick={handleAddNoteClick}
         className="transition-200 fixed bottom-4 right-4 z-50 flex size-12 items-center justify-center rounded-full border border-amber-400 bg-amber-400 text-dark shadow hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-300"
       >
