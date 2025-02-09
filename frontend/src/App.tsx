@@ -15,7 +15,7 @@ import About from './pages/About';
 import { getNotes } from './utils/api';
 import { NoteProps } from './interfaces/types';
 import UserProfile from './pages/UserProfile';
-import VerifyOTP from './pages/VerifyOtp';
+import VerifyOTP from './pages/VerifyOTP';
 
 const App: React.FC = () => {
   const [search, setSearch] = useState('');

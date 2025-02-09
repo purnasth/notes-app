@@ -21,14 +21,6 @@ const tempUserStore = new Map<string, any>();
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { username, email, password } = req.body;
-  console.log(
-    "User attempting to register:",
-    username,
-    "Email:",
-    email,
-    "Password:",
-    password
-  );
   try {
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
@@ -36,15 +28,19 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Store user temporarily with expiration (10 minutes)
     tempUserStore.set(email, {
       username,
       email,
-      password: await bcrypt.hash(password, 10),
-      expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+      password,
+      expiresAt: Date.now() + 10 * 60 * 1000,
     });
 
-    // Generate and send OTP
+    // Check if OTP already exists and is valid
+    if (otpStore.has(email) && otpStore.get(email)!.expiresAt > Date.now()) {
+      res.json({ message: "OTP already sent, please check your email" });
+      return;
+    }
+
     const otp = speakeasy.totp({
       secret: speakeasy.generateSecret().base32,
       encoding: "base32",
@@ -59,21 +55,22 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       text: `Your OTP is: ${otp}. It is valid for 5 minutes.`,
     });
 
-    res.json({ message: "OTP sent to email" });
+    res.json({ message: "OTP sent successfully to your email" });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export const sendOTP = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const sendOTP = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email } = req.body;
     if (!email) {
       res.status(400).json({ message: "Email is required" });
+      return;
+    }
+
+    if (otpStore.has(email) && otpStore.get(email)!.expiresAt > Date.now()) {
+      res.json({ message: "OTP already sent, please check your email" });
       return;
     }
 
@@ -82,7 +79,7 @@ export const sendOTP = async (
       encoding: "base32",
     });
 
-    otpStore.set(email, { otp, expiresAt: Date.now() + 5 * 60 * 1000 }); // 5 mins expiry
+    otpStore.set(email, { otp, expiresAt: Date.now() + 5 * 60 * 1000 });
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -93,15 +90,11 @@ export const sendOTP = async (
 
     res.json({ message: "OTP sent successfully" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export const verifyOTP = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, otp } = req.body;
     const storedOtp = otpStore.get(email);
@@ -122,34 +115,31 @@ export const verifyOTP = async (
       return;
     }
 
-    // Check temporary user storage
     const tempUser = tempUserStore.get(email);
     if (!tempUser || Date.now() > tempUser.expiresAt) {
       res.status(400).json({ error: "Registration session expired" });
       return;
     }
 
-    // Create actual user
     const user = await createUser(
       tempUser.username,
       tempUser.email,
       tempUser.password
     );
 
-    // Cleanup storage
     tempUserStore.delete(email);
     otpStore.delete(email);
 
     res.json({ message: "Account created successfully", user });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password, rememberMe } = req.body;
 
-  console.log("User attempting to login:", password);
+  console.log("User attempting to login with email:", email);
 
   try {
     const user = await findUserByEmail(email);
@@ -158,10 +148,23 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    console.log("Stored user:", user);
 
-    console.log("Password:", password, "Hash:", user.password_hash);
-    
+    if (!user.password_hash) {
+      res.status(500).json({ error: "User password is missing in database" });
+      return;
+    }
+
+    console.log("Entered Password:", password);
+    console.log("Stored Hashed Password:", user.password_hash);
+
+    const isPasswordValid = await bcrypt.compare(
+      password.trim(),
+      user.password_hash
+    );
+
+    console.log("Password match result:", isPasswordValid);
+
     if (!isPasswordValid) {
       res.status(400).json({ error: "Incorrect password" });
       return;
@@ -179,9 +182,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       const sessionToken = jwt.sign(
         { userId: user.id },
         process.env.JWT_SECRET,
-        {
-          expiresIn: "7d",
-        }
+        { expiresIn: "7d" }
       );
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       await createSession(user.id, sessionToken, expiresAt);
@@ -194,9 +195,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     console.log("User logged in:", user.username);
 
-    const username = capitalize(user.username);
-    res.json({ message: `Welcome, ${username}!`, token });
+    res.json({ message: `Welcome, ${capitalize(user.username)}!`, token });
   } catch (error) {
+    console.error("Login error:", error);
     res
       .status(500)
       .json({ error: "Internal server error. Please try again later." });

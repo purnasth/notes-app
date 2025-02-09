@@ -5,7 +5,7 @@
             "server": "localhost",
             "port": 5432,
             "driver": "PostgreSQL",
-            "name": "notes_app",
+            "name": "notes-app",
             "database": "notes_app",
             "username": "postgres"
         }
