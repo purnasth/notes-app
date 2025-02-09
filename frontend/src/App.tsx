@@ -15,6 +15,7 @@ import About from './pages/About';
 import { getNotes } from './utils/api';
 import { NoteProps } from './interfaces/types';
 import UserProfile from './pages/UserProfile';
+import VerifyOTP from './pages/VerifyOTP';
 
 const App: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -122,6 +123,7 @@ const App: React.FC = () => {
               />
             }
           />
+          <Route path="/verify-otp" element={<VerifyOTP />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
@@ -195,7 +197,15 @@ export default App;
 //           />
 //         )}
 //         {children}
-//       </>
+//       </>ildren;
+//   };
+
+//   // Public Route Component
+//   const PublicRoute = ({ children }: { children: JSX.Element }) => {
+//     if (isAuthenticated()) {
+//       return <Navigate to="/" />;
+//     }
+//     return childr
 //     );
 //   };
 
@@ -204,15 +214,7 @@ export default App;
 //     if (!isAuthenticated()) {
 //       return <Navigate to="/login" />;
 //     }
-//     return children;
-//   };
-
-//   // Public Route Component
-//   const PublicRoute = ({ children }: { children: JSX.Element }) => {
-//     if (isAuthenticated()) {
-//       return <Navigate to="/" />;
-//     }
-//     return children;
+//     return chen;
 //   };
 
 //   // Fetch notes whenever search, categories, sort, or page changes

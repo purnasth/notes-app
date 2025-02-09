@@ -4,6 +4,11 @@ declare module "express" {
   }
 }
 
+declare module "speakeasy" {
+  const speakeasy: any;
+  export default speakeasy;
+}
+
 import { Request } from "express";
 
 export interface AuthenticatedRequest extends Request {

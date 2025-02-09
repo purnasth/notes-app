@@ -109,7 +109,12 @@ DB_NAME=notes_app
 DB_PASSWORD=your_db_password
 DB_PORT=5432
 JWT_SECRET=your_jwt_secret
+EMAIL_USER=your_email_user@gmail.com
+EMAIL_PASS=your_email_app_password
+
 ```
+
+`NOTE`: To generate an app password for your Gmail account, follow the instructions [here](https://support.google.com/accounts/answer/185833?hl=en) or - navigate to your Google Account settings, click on Security, and then enable Two Factor Authentication. After that, search for App Passwords and generate a new app password for your email account and use it in the `.env` file.
 
 `Note:` Replace the placeholders with your database credentials and JWT secret.
 
@@ -407,6 +412,65 @@ Response:
     "created_at": "2025-02-03T07:38:29.970Z"
   }
 ]
+```
+
+---
+
+1. Send OTP to the user
+
+- **POST** `http://localhost:5000/api/auth/send-otp`
+- **Purpose:** Send an OTP to the user's email for verification.
+
+Request body:
+
+```json
+{
+  "email": "your_email@gmail.com",
+}
+
+Response:
+
+```json
+{
+    "message": "OTP sent successfully"
+}
+```
+
+2. Verify OTP
+
+- **POST** `http://localhost:5000/api/auth/verify-otp`
+- **Purpose:** Verify the OTP sent to the user's email.
+
+Request body:
+
+```json
+{
+  "email": "your_email@gmail.com",
+  "otp": "your_otp"
+}
+
+Response:
+
+-- Success:
+
+```json
+{
+    "message": "OTP verified successfully"
+}
+
+-- Error:
+
+```json
+{
+    "error": "Invalid OTP"
+}
+
+-- Expired:
+
+```json
+{
+    "error": "OTP expired"
+}
 ```
 
 --- 

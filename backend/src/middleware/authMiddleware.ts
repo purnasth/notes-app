@@ -13,6 +13,7 @@ export const authenticate = async (
 ): Promise<void> => {
   const token =
     req.cookies.session_token || req.headers.authorization?.split(" ")[1];
+
   if (!token) {
     res.status(401).json({ error: "Unauthorized" });
     return;
@@ -22,14 +23,16 @@ export const authenticate = async (
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
       userId: number;
     };
+
     const session = await findSessionByToken(token);
     if (!session) {
-      res.status(401).json({ error: "Unauthorized" });
+      res.status(401).json({ error: "Unauthorized - Invalid session" });
       return;
     }
+
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Unauthorized - Invalid token" });
   }
 };

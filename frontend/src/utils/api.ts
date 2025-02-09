@@ -55,6 +55,16 @@ export const registerUser = async (
   return response.data;
 };
 
+// Send OTP after registration
+export const sendOTP = async (email: string) => {
+  return await axios.post(`${API_BASE_URL}/auth/send-otp`, { email });
+};
+
+// Verify OTP
+export const verifyOTP = async (email: string, otp: string) => {
+  return await axios.post(`${API_BASE_URL}/auth/verify-otp`, { email, otp });
+};
+
 // Login a user
 export const loginUser = async (
   email: string,
