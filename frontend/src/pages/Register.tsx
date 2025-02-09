@@ -6,7 +6,7 @@ import PasswordToggle from '../components/PasswordToggle';
 import useFormValidation from '../hooks/useFormValidation';
 import { registerSchema } from '../utils/validationSchemas';
 import * as yup from 'yup';
-import { registerUser } from '../utils/api';
+import { registerUser, sendOTP } from '../utils/api';
 
 type RegisterFormData = yup.InferType<typeof registerSchema>;
 
@@ -48,7 +48,8 @@ const Register = () => {
         data.password,
       );
       toast.success(response.message);
-      navigate('/login'); // Redirect to login page after successful registration
+      await sendOTP(data.email); // Send OTP after successful registration
+      navigate('/verify-otp', { state: { email: data.email } }); // Redirect to OTP verification page
     } catch (error: any) {
       const errorMessage = error.response?.data?.error;
       if (errorMessage.includes('already exists')) {
