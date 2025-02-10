@@ -21,9 +21,21 @@ Notes App is a simple note-taking app that allows you to jot down your thoughts 
 
 ## 📷 Demo
 
+## User Registration
+
+https://github.com/user-attachments/assets/9ac76351-c60e-4a1e-8df6-2e62fb234812
+
+## Notes Ap
+
+https://github.com/user-attachments/assets/8739ae09-c342-4f48-8ecd-95fa6434e2a7
 
 
 
+
+
+
+
+---
 
 ## 🛠️ Technologies Use
 
@@ -99,7 +111,7 @@ Notes App is a simple note-taking app that allows you to jot down your thoughts 
 
 ### Attachments
 
-
+![image](https://github.com/user-attachments/assets/2e196adf-c0be-4aaf-99a0-57b57ff5f2fb)
 
 ---
 
