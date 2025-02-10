@@ -17,6 +17,7 @@ import { getNotes } from './utils/api';
 import { NoteProps } from './interfaces/types';
 import UserProfile from './pages/UserProfile';
 import axios from 'axios';
+import VerifyOTP from './pages/VerifyOTP';
 
 const PublicRoute = () => {
   const isAuthenticated = !!localStorage.getItem('token'); // Check if user is logged in
@@ -151,6 +152,7 @@ const App: React.FC = () => {
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify-otp" element={<VerifyOTP />} />
           </Route>
           <Route path="/about" element={<About />} />
           <Route
