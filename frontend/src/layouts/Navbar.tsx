@@ -8,9 +8,6 @@ import SearchBar from '../components/ui/SearchBar';
 import { handleLogout } from '../utils/api';
 import { GrPowerReset } from 'react-icons/gr';
 import ConfirmModal from '../components/ui/ConfirmModal';
-import { FaCircleUser } from 'react-icons/fa6';
-import { TbUserCircle } from 'react-icons/tb';
-import { IoMdLogOut } from 'react-icons/io';
 import { TbUserSquareRounded , TbLogout} from 'react-icons/tb';
 
 interface NavbarProps {
@@ -173,7 +170,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
         <div
           className={`fixed right-4 top-[5.5rem] h-fit w-[calc(100%-2rem)] rounded-2xl border bg-white p-3 transition-all duration-700 ease-in-out md:w-80 ${
-            isNavOpen ? 'translate-x-0' : 'translate-x- [125%]'
+            isNavOpen ? 'translate-x-0' : 'translate-x-[125%]'
           } ${visible ? 'opacity-100' : '-translate-y-[150%]'} z-30`}
         >
           <div className="space-y-4">
