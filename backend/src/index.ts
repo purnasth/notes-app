@@ -5,6 +5,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import noteRoutes from "./routes/noteRoutes";
 import { errorHandler } from "./middleware/errorHandler";
+import { setupSwagger } from "./config/swagger";
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 // app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+
+// Setup Swagger API documentation
+setupSwagger(app);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/notes", noteRoutes);
