@@ -15,6 +15,7 @@ import {
 import { capitalize } from "../utils/helper";
 import speakeasy from "speakeasy";
 import { transporter } from "../config/email";
+import logger from "../utils/logger";
 
 const otpStore = new Map<string, { otp: string; expiresAt: number }>();
 const tempUserStore = new Map<string, any>();
@@ -24,6 +25,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
+      logger.warn(`Registration failed: User already exists, ${email}`);
       res.status(400).json({ error: "User already exists" });
       return;
     }
@@ -37,6 +39,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // Check if OTP already exists and is valid
     if (otpStore.has(email) && otpStore.get(email)!.expiresAt > Date.now()) {
+      logger.info(`OTP already sent to ${email}, please check your email`);
       res.json({ message: "OTP already sent, please check your email" });
       return;
     }
@@ -55,8 +58,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       text: `Your OTP is: ${otp}. It is valid for 5 minutes.`,
     });
 
+    logger.info(`OTP sent successfully to ${email}`);
     res.json({ message: "OTP sent successfully to your email" });
   } catch (error) {
+    logger.error(`Registration failed: ${error}`);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -65,11 +70,13 @@ export const sendOTP = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email } = req.body;
     if (!email) {
+      logger.warn("OTP request failed: Email is required");
       res.status(400).json({ message: "Email is required" });
       return;
     }
 
     if (otpStore.has(email) && otpStore.get(email)!.expiresAt > Date.now()) {
+      logger.info(`OTP already sent to ${email}, please check your email`);
       res.json({ message: "OTP already sent, please check your email" });
       return;
     }
@@ -88,8 +95,10 @@ export const sendOTP = async (req: Request, res: Response): Promise<void> => {
       text: `Your OTP is: ${otp}. It is valid for 5 minutes.`,
     });
 
+    logger.info(`OTP sent successfully to ${email}`);
     res.json({ message: "OTP sent successfully" });
   } catch (error) {
+    logger.error(`OTP request failed: ${error}`);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -100,23 +109,29 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     const storedOtp = otpStore.get(email);
 
     if (!storedOtp) {
+      logger.warn(`OTP verification failed: No OTP found for ${email}`);
       res.status(400).json({ error: "No OTP found" });
       return;
     }
 
     if (Date.now() > storedOtp.expiresAt) {
       otpStore.delete(email);
+      logger.warn(`OTP verification failed: OTP expired for ${email}`);
       res.status(400).json({ error: "OTP expired" });
       return;
     }
 
     if (storedOtp.otp !== otp) {
+      logger.warn(`OTP verification failed: Invalid OTP for ${email}`);
       res.status(400).json({ error: "Invalid OTP" });
       return;
     }
 
     const tempUser = tempUserStore.get(email);
     if (!tempUser || Date.now() > tempUser.expiresAt) {
+      logger.warn(
+        `OTP verification failed: Registration session expired for ${email}`
+      );
       res.status(400).json({ error: "Registration session expired" });
       return;
     }
@@ -130,6 +145,7 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     tempUserStore.delete(email);
     otpStore.delete(email);
 
+    logger.info(`Account created successfully for ${email}`);
     res.json({ message: "Account created successfully", user });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -139,11 +155,12 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password, rememberMe } = req.body;
 
-  console.log("User attempting to login with email:", email);
+  logger.info(`User login attempt: ${email}`);
 
   try {
     const user = await findUserByEmail(email);
     if (!user) {
+      logger.warn(`Login failed: No account found with ${email}`);
       res.status(400).json({ error: "No account found with this email" });
       return;
     }
@@ -151,21 +168,18 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     console.log("Stored user:", user);
 
     if (!user.password_hash) {
+      logger.error(`User password is missing in database for ${email}`);
       res.status(500).json({ error: "User password is missing in database" });
       return;
     }
-
-    console.log("Entered Password:", password);
-    console.log("Stored Hashed Password:", user.password_hash);
 
     const isPasswordValid = await bcrypt.compare(
       password.trim(),
       user.password_hash
     );
 
-    console.log("Password match result:", isPasswordValid);
-
     if (!isPasswordValid) {
+      logger.warn(`Login failed: Incorrect password for ${email}`);
       res.status(400).json({ error: "Incorrect password" });
       return;
     }
@@ -193,11 +207,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       });
     }
 
-    console.log("User logged in:", user.username);
+    logger.info(
+      `User logged in successfully: ${email}, username: ${user.username}`
+    );
 
     res.json({ message: `Welcome, ${capitalize(user.username)}!`, token });
   } catch (error) {
-    console.error("Login error:", error);
+    logger.error(`Login failed: ${error}`);
     res
       .status(500)
       .json({ error: "Internal server error. Please try again later." });
@@ -210,6 +226,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     await deleteSession(sessionToken);
     res.clearCookie("session_token");
   }
+  logger.info("User logged out successfully");
   res.json({ message: "Logout successful" });
 };
 
@@ -220,12 +237,16 @@ export const getCurrentUser = async (
   try {
     const userId = req.userId; // Extracted from the JWT token in the auth middleware
     if (!userId) {
+      logger.warn(
+        "Unauthorized access attempt to get current user, no userId found in JWT"
+      );
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
 
     const user = await findUserById(userId);
     if (!user) {
+      logger.warn(`User not found with id: ${userId}`);
       res.status(404).json({ error: "User not found" });
       return;
     }
@@ -238,7 +259,7 @@ export const getCurrentUser = async (
       created_at: user.created_at,
     });
   } catch (error: any) {
-    console.error("Error fetching user:", error);
+    logger.error(`Error fetching current user: ${error}`);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -249,9 +270,10 @@ export const getAllUsersController = async (
 ): Promise<void> => {
   try {
     const users = await getAllUsers();
+    logger.info("Fetched all users successfully");
     res.json(users);
   } catch (error: any) {
-    console.error("Error fetching users:", error);
+    logger.error(`Error fetching all users: ${error}`);
     res.status(500).json({ error: "Internal server error" });
   }
 };

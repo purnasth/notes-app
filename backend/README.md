@@ -57,7 +57,7 @@ Update the tsconfig.json file:
 
 Create the folder structure:
 
-```
+<!-- ```
 📂 backend/
 ├── 📂 src/
 │   ├── 📂 controllers/
@@ -71,10 +71,12 @@ Create the folder structure:
 ├── package.json
 ├── README.md
 └── tsconfig.json
-```
+``` -->
 
-<!-- ```
+```
 📂 backend/
+├── 📂 logs/
+│   └── app.log
 ├── 📂 src/
 │   │── 📂 config/
 │   │    ├── db.ts 
@@ -86,7 +88,8 @@ Create the folder structure:
 │   │    └── types.ts
 │   │── 📂 middleware/
 │   │    ├── authMiddleware.ts
-│   │    └── errorHandler.ts
+│   │    ├── errorHandler.ts
+│   │    └── requestLogger.ts
 │   │── 📂 models/
 │   │    ├── noteModel.ts
 │   │    ├── sessionModel.ts
@@ -95,14 +98,15 @@ Create the folder structure:
 │   │    ├── authRoutes.ts
 │   │    └── noteRoutes.ts
 │   │── 📂 utils/
-│   │    └── helper.ts
+│   │    ├── helper.ts
+│   │    └── logger.ts
 │   └── index.ts
 ├── .env
 ├── .gitignore
 ├── package.json
 ├── README.md
 └── tsconfig.json
-``` -->
+```
 
 `Note:` The **src/** directory contains subdirectories for controllers, models, routes, and utilities. The **config/** directory will store configuration files. The **index.ts** file will be the entry point for the application.
 
@@ -853,11 +857,41 @@ Response:
 
 ## Swagger Documentation
 
+```
+pnpm add swagger-jsdoc swagger-ui-express
+pnpm i --save-dev @types/swagger-jsdoc @types/swagger-ui-express
+```
+
 - **URL**: `http://localhost:5000/api-docs`
 
 The Swagger documentation provides detailed information about the API endpoints, request and response schemas, and example requests and responses.
 
 `Note:` For Authentication, click on the `Authorize` button and enter the `JWT token` in the `Value` field. Click on `Authorize` to set the token for all requests.
 
+
+---
+
+## Winston Logger
+
+- **Purpose:** The Winston logger is used to log information, errors, and debug messages to the console and log files.
+
+```
+pnpm add winston
+pnpm add --save-dev @types/winston
+```
+
+`Note`: The `app.log` file will be created in the `logs/` directory to store the logs. 
+
+Example log message:
+
+```bash
+[2025-02-10 17:19:09] INFO: POST /api/auth/login - ::1
+[2025-02-10 17:19:09] INFO: User login attempt: purnashrestha0310@gmail.com
+[2025-02-10 17:19:09] INFO: User logged in successfully: purnashrestha0310@gmail.com, username: purna-shrestha
+[2025-02-10 17:19:10] INFO: GET /api/notes?search=&sortBy=modified_at&sortOrder=desc&page=1&limit=24 - ::1
+[2025-02-10 17:19:10] INFO: GET /api/notes?search=&sortBy=modified_at&sortOrder=desc&page=1&limit=24 - ::1
+[2025-02-10 17:23:08] INFO: POST /api/notes - ::1
+[2025-02-10 17:23:08] INFO: Note created successfully for user 2
+```
 
 ---
