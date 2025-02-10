@@ -40,15 +40,23 @@ export const getNotes: express.RequestHandler = async (
       return;
     }
 
-    const { search, categories, sortBy, sortOrder, page, limit } = req.query;
+    const {
+      search = "",
+      categories = [],
+      sortBy = "created_at",
+      sortOrder = "desc",
+      page = "1",
+      limit = "10",
+    } = req.query;
+
     const notes = await NoteModel.findNotes(
       userId,
       search as string,
-      categories as string[],
+      Array.isArray(categories) ? (categories as string[]) : [categories as string],
       sortBy as string,
       sortOrder as "asc" | "desc",
-      page ? parseInt(page as string, 10) : undefined,
-      limit ? parseInt(limit as string, 10) : undefined
+      parseInt(page as string, 10),
+      parseInt(limit as string, 10)
     );
 
     res.json(notes);

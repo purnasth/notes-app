@@ -77,17 +77,23 @@ Create the folder structure:
 📂 backend/
 ├── 📂 src/
 │   │── 📂 config/
-│   │    └── db.ts 
+│   │    ├── db.ts 
+│   │    └── email.ts 
 │   │── 📂 controllers/
-│   │    └── authController.ts
+│   │    ├── authController.ts
+│   │    └── noteController.ts
+│   │── 📂 interfaces/
+│   │    └── types.ts
 │   │── 📂 middleware/
 │   │    ├── authMiddleware.ts
 │   │    └── errorHandler.ts
 │   │── 📂 models/
+│   │    ├── noteModel.ts
 │   │    ├── sessionModel.ts
 │   │    └── userModel.ts
 │   │── 📂 routes/
-│   │    └── authRoutes.ts
+│   │    ├── authRoutes.ts
+│   │    └── noteRoutes.ts
 │   │── 📂 utils/
 │   │    └── helper.ts
 │   └── index.ts
@@ -842,3 +848,16 @@ Response:
   }
 ]
 ```
+
+---
+
+## Swagger Documentation
+
+- **URL**: `http://localhost:5000/api-docs`
+
+The Swagger documentation provides detailed information about the API endpoints, request and response schemas, and example requests and responses.
+
+`Note:` For Authentication, click on the `Authorize` button and enter the `JWT token` in the `Value` field. Click on `Authorize` to set the token for all requests.
+
+
+---
