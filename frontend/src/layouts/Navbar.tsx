@@ -338,7 +338,6 @@ import { IoMdClose } from 'react-icons/io';
 import { getInitials } from '../utils/helper';
 import SearchBar from '../components/ui/SearchBar';
 import { handleLogout } from '../utils/api';
-import axios from 'axios';
 import { GrPowerReset } from 'react-icons/gr';
 import ConfirmModal from '../components/ui/ConfirmModal';
 
@@ -349,6 +348,7 @@ interface NavbarProps {
   onSortChange: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
   isNavOpen: boolean;
   setIsNavOpen: (isOpen: boolean) => void;
+  user: { username: string; email: string } | null;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -358,12 +358,11 @@ const Navbar: React.FC<NavbarProps> = ({
   onSortChange,
   isNavOpen,
   setIsNavOpen,
+  user,
 }) => {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
-  const [user, setUser] = useState<{ username: string; email: string } | null>(
-    null,
-  );
+
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
     'all',
   ]);
@@ -388,24 +387,6 @@ const Navbar: React.FC<NavbarProps> = ({
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [prevScrollPos]);
-
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/me`,
-          {
-            withCredentials: true,
-          },
-        );
-        setUser(response.data);
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      }
-    };
-
-    fetchCurrentUser();
-  }, []);
 
   useEffect(() => {
     setIsNavOpen(false);
@@ -654,9 +635,9 @@ const Navbar: React.FC<NavbarProps> = ({
 
             <hr />
 
-            <div className="user-profile flex items-center gap-4 p-2">
+            <div className="user-profile flex items-center gap-2 rounded-xl border bg-amber-50 p-2">
               <Link to="/profile" className="flex items-center gap-2 text-dark">
-                <span className="transition-300 flex size-14 scale-[0.95] items-center justify-center rounded-full border border-amber-500 bg-amber-100 p-2 text-xl font-bold text-amber-500 outline outline-1 outline-offset-2 outline-amber-500/40 group-hover:scale-100">
+                <span className="transition-300 flex size-14 scale-[0.95] items-center justify-center rounded-full border border-amber-500 bg-amber-200/50 p-2 text-xl font-bold text-amber-500 outline outline-1 outline-offset-2 outline-amber-500/40 group-hover:scale-100">
                   {getInitials(user?.username || 'Guest')}
                 </span>
               </Link>
@@ -664,14 +645,23 @@ const Navbar: React.FC<NavbarProps> = ({
                 <h3 className="text-base capitalize">
                   {user?.username || 'Guest'}
                 </h3>
-                <button
-                  type="button"
-                  aria-label="Logout"
-                  onClick={handleLogoutClick}
-                  className="transition-300 text-base font-medium text-amber-400 hover:text-amber-400 hover:underline"
-                >
-                  Logout
-                </button>
+                <div className="space-x-1">
+                  <Link
+                    to="/profile"
+                    aria-label="Profile"
+                    className="transition-300 rounded-full border border-amber-400 bg-amber-100 px-2 text-sm font-medium text-amber-500 hover:bg-amber-400 hover:text-dark"
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label="Logout"
+                    onClick={handleLogoutClick}
+                    className="transition-300 transition-200 rounded-full border border-amber-400 px-2 text-sm font-medium text-amber-400 hover:bg-amber-400 hover:text-dark"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
             </div>
           </div>

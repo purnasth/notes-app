@@ -7,10 +7,12 @@ import { IoBulbOutline } from 'react-icons/io5';
 // import addTask from '../assets/svg/add-task.svg';
 import human1 from '../assets/svg/human-1.svg';
 import human2 from '../assets/svg/human-2.svg';
+import Header from '../layouts/Header';
 
 const About = () => {
   return (
     <>
+      <Header page="about" />
       <main className="my-16 flex h-full flex-col items-center justify-center lg:my-0 lg:h-screen">
         <div className="relative mx-auto max-w-3xl 2xl:max-w-5xl">
           <div className="pointer-events-none absolute inset-0 -z-10 flex select-none items-start justify-start">
@@ -63,13 +65,13 @@ const About = () => {
         <img
           src={human1}
           alt="Add Task"
-          className="absolute bottom-0 left-0 -z-20 h-24 w-auto object-contain mix-blend-darken md:h-64 lg:block lg:h-[60vh]"
+          className="absolute bottom-0 left-0 -z-20 hidden h-24 w-auto object-contain mix-blend-darken md:block md:h-64 lg:h-[60vh]"
           draggable="false"
         />
         <img
           src={human2}
           alt="Add Task"
-          className="absolute bottom-0 right-0 -z-20 h-24 w-auto object-contain mix-blend-darken md:h-64 lg:block lg:h-[60vh]"
+          className="absolute bottom-0 right-0 -z-20 hidden h-24 w-auto object-contain mix-blend-darken md:block md:h-64 lg:h-[60vh]"
           draggable="false"
         />
       </main>

@@ -4,6 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { NoteProps } from '../interfaces/types';
 import { getFirstName, getFullName, getInitials } from '../utils/helper';
 import moment from 'moment';
+import Header from '../layouts/Header';
 // import human1 from '../assets/svg/human-1.svg';
 // import human2 from '../assets/svg/human-2.svg';
 // import { Link } from 'react-router-dom';
@@ -13,7 +14,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface UserProfileProps {
   user: {
-    id: number;
+    id: string;
     username: string;
     email: string;
     created_at: string;
@@ -60,13 +61,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, notes }) => {
 
   return (
     <>
+      <Header page="profile" />
+
       <main className="relative h-screen">
         <div className="container flex flex-col justify-around gap-12 lg:flex-row">
           <div className="space-y-8">
             {/* <h1 className="mb-8 text-2xl capitalize">
               Welcome, {getFirstName(user.username)}!
             </h1> */}
-            <h1 className="text-xl md:text-2xl capitalize">
+            <h1 className="text-xl capitalize md:text-2xl">
               User Profile of {getFirstName(user.username)}!
             </h1>
             <div className="flex items-center justify-start gap-5">
