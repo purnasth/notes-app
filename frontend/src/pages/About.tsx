@@ -26,7 +26,7 @@ const About = () => {
             <IoBulbOutline className="absolute bottom-0 -z-20 origin-center scale-150 animate-pulse text-6xl text-amber-400 blur-lg" />
           </div>
           <div className="z-10 space-y-8 text-center">
-            <span className="rounded-full border-2 border-amber-500 px-3 py-1 text-sm font-medium uppercase text-amber-500">
+            <span className="rounded-full border-2 border-amber-400 px-3 py-1 text-sm font-medium uppercase text-amber-500">
               Notes App
             </span>
             <h1 className="text-4xl font-semibold leading-tight text-dark md:text-5xl md:leading-snug xl:text-6xl xl:leading-snug 2xl:text-7xl 2xl:leading-snug">

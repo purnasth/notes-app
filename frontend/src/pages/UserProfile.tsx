@@ -105,7 +105,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, notes }) => {
               <strong className="font-semibold">
                 {Object.keys(categoryCounts).length}
               </strong>{' '}
-              categories.
+              {/* categories. */}
+              {notes.length === 1 ? 'category' : 'categories'}.
             </p>
           </div>
           <div className="w-full max-w-xl 2xl:max-w-3xl">
