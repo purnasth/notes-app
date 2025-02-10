@@ -16,6 +16,8 @@ Notes App is a simple note-taking app that allows you to jot down your thoughts 
 - **Profile Dashboard**: Users can view their profile information and update their profile picture.
 - **Profanity Filter**: Notes with profane and offensive content are automatically filtered out.
 - **2FA+OTP**: Users have to verify their email via OTP to access the app.
+- **Swagger Documentation**: API documentation for developers.
+- **Winston Logging**: Logging for monitoring and debugging.
 
 ---
 
@@ -28,12 +30,6 @@ https://github.com/user-attachments/assets/9ac76351-c60e-4a1e-8df6-2e62fb234812
 ## Notes Ap
 
 https://github.com/user-attachments/assets/8739ae09-c342-4f48-8ecd-95fa6434e2a7
-
-
-
-
-
-
 
 ---
 
@@ -70,6 +66,8 @@ https://github.com/user-attachments/assets/8739ae09-c342-4f48-8ecd-95fa6434e2a7
 - **dotenv**: For environment variables
 - **jsonwebtoken**: For generating and verifying JWT tokens
 - **pg**: PostgreSQL client for Node.js
+- **winston**: For logging, monitoring and storing logs
+- **swagger**: For API documentation
 
 ---
 
