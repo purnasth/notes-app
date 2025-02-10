@@ -6,7 +6,18 @@ Notes App is a MERN stack application that allows users to create, read, update,
 
 ## 🚀 Features
 
-- **Modern UI Design**:
+- **Modern & Minimalist UI Design**: The application has a clean and minimalist user interface that is easy to use and navigate.
+- **Responsive Layout**: The application is fully responsive and works on all devices and screen sizes.
+- **User Authentication**: Users can register, login, and logout from the application.
+- **Create, Read, Update, Delete Notes**: Users can create, read, update, and delete notes.
+- **Pin Notes**: Users can pin notes to keep them at the top of the list.
+- **Search Notes**: Users can search for notes by title or content.
+- **Filter Notes**: Users can filter notes by category.
+- **Sort Notes**: Users can sort notes by created date, modified date or ascending order.
+- **Pagination**: Users can navigate through multiple pages of notes.
+- **Toast Notifications**: Users receive toast notifications for actions like creating, updating, and deleting notes.
+- **Profile Dashboard**: Users can view their profile information and update their profile picture.
+- **Profanity Filter**: Notes with profane and offensive content are automatically filtered out.
 
 ---
 
@@ -16,6 +27,16 @@ Notes App is a MERN stack application that allows users to create, read, update,
 - **Vite**: Fast build tool
 - **TypeScript**: For static typing
 - **TailwindCSS**: Utility-first CSS framework
+- **React Router**: For routing
+- **Axios**: For API calls
+- **React Hook Form**: For form validation
+- **Yup**: For schema validation
+- **React Icons**: For icons
+- **React Toastify**: For toast notifications
+- **Chart.js**: For charts and graphs
+- **ReCharts**: For charts and graphs
+- **Moment.js**: For date and time formatting
+- **Dotenv**: For environment variables
 
 ---
 
@@ -111,7 +132,6 @@ Notes App is a MERN stack application that allows users to create, read, update,
 3. Create an `.env` file: 
     ```bash
     VITE_API_URL=https://api.com # Your API URL
-    VITE_RECAPTCHA_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI # Your reCAPTCHA site key
     ```
 4. Start the development server:
     ```bash
@@ -122,10 +142,53 @@ Notes App is a MERN stack application that allows users to create, read, update,
 
 ## API Endpoints and Usage
 
-1. `/api1` (api.tsx)
-   - **Files**: ``, ``
-   - **Usage**: 
-   - **Details**:
+1. `/auth/register`:
+    - **Method**: POST
+    - **Description**: Register a new user
+    
+2. `/auth/login`:
+    - **Method**: POST
+    - **Description**: Login an existing user
+
+3. `/auth/logout`:
+    - **Method**: POST
+    - **Description**: Logout the current user
+
+4. `/auth/me`:
+    - **Method**: GET
+    - **Description**: Get the current user
+
+5. `/notes?query=...`: 
+    - **Method**: GET
+    - **Description**: Get all notes
+    - **Method**: POST
+    - **Description**: Create a new note
+    - **Method**: PUT
+    - **Description**: Update a note
+    - **Method**: DELETE
+    - **Description**: Delete a note
+
+6. `/notes/:id`:
+    - **Method**: GET
+    - **Description**: Get a single note
+    - **Method**: PUT
+    - **Description**: Update a note
+    - **Method**: DELETE
+    - **Description**: Delete a note
+
+7. `/notes/:id/pin`:
+    - **Method**: PUT
+    - **Description**: Pin a note
+    - **Method**: DELETE
+    - **Description**: Unpin a note"
+
+8. `/auth/send-otp`:
+    - **Method**: POST
+    - **Description**: Send an OTP to the user's email
+
+9. `/auth/verify-otp`:
+    - **Method**: POST
+    - **Description**: Verify the OTP sent to the user's email
 
 ---
 
@@ -186,22 +249,6 @@ Notes App is a MERN stack application that allows users to create, read, update,
 - `preview`: vite preview
 
 ---
-
-## 📝 Frontend Documentation
-
-### 1. For Deployment on Cloudflare:
-``` plaintext
-1. Go to the Cloudflare dashboard.
-2. Select the website you want to deploy.
-3. Go to the `Workers & Pages` tab.
-4. Connect your GitHub repository.
-5. Select the branch you want to deploy.
-6. Click on the `Deploy` button.
-    - use the following command: `pnpm run build`
-    - use the following directory: `dist`
-   OR 
-   Simply select the "React Vite" framework and deploy.
-```
 
 ## Team Members
 

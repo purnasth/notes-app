@@ -243,7 +243,8 @@ notes_app=# \dt
 --------+----------+-------+----------
   public | sessions | table | postgres
   public | users    | table | postgres
-  (2 rows)
+  public | notes    | table | postgres
+  (3 rows)
 ```
 
 ### 1.3 Create the Database Connection
