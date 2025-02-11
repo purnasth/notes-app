@@ -1,7 +1,7 @@
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PasswordToggle from '../components/PasswordToggle';
 import useFormValidation from '../hooks/useFormValidation';
 import { loginSchema } from '../utils/validationSchemas';
@@ -32,7 +32,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useFormValidation(loginSchema);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
@@ -43,7 +43,8 @@ const Login = () => {
       );
       localStorage.setItem('token', response.token);
       toast.success(response.message);
-      navigate('/');
+      // navigate('/');
+      window.location.href = '/';
     } catch (error: any) {
       const errorMessage = error.response?.data?.error;
       if (errorMessage.includes('No account')) {
