@@ -1,42 +1,30 @@
-import pool from "../config/db";
-
-interface Session {
-  id: number;
-  user_id: number;
-  session_token: string;
-  expires_at: Date;
-  created_at: Date;
-}
+import prisma from "../config/db";
+import { Session } from "../interfaces/types";
 
 export const createSession = async (
   userId: number,
   sessionToken: string,
   expiresAt: Date
 ): Promise<Session> => {
-  try {
-    const result = await pool.query(
-      "INSERT INTO sessions (user_id, session_token, expires_at) VALUES ($1, $2, $3) RETURNING *",
-      [userId, sessionToken, expiresAt]
-    );
-    return result.rows[0];
-  } catch (error: any) {
-    console.error('Error creating session:', error);
-    throw new Error("Failed to create session");
-  }
+  const session = await prisma.sessions.create({
+    data: {
+      user_id: userId,
+      session_token: sessionToken,
+      expires_at: expiresAt,
+    },
+  });
+  return session;
 };
 
 export const findSessionByToken = async (
   sessionToken: string
 ): Promise<Session | null> => {
-  const result = await pool.query(
-    "SELECT * FROM sessions WHERE session_token = $1",
-    [sessionToken]
-  );
-  return result.rows[0] || null;
+  const session = await prisma.sessions.findUnique({
+    where: { session_token: sessionToken },
+  });
+  return session;
 };
 
 export const deleteSession = async (sessionToken: string): Promise<void> => {
-  await pool.query("DELETE FROM sessions WHERE session_token = $1", [
-    sessionToken,
-  ]);
+  await prisma.sessions.delete({ where: { session_token: sessionToken } });
 };

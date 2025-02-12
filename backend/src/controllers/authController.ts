@@ -1,21 +1,13 @@
 import express, { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import {
-  createUser,
-  findUserByEmail,
-  findUserById,
-  getAllUsers,
-} from "../models/userModel";
-import {
-  createSession,
-  findSessionByToken,
-  deleteSession,
-} from "../models/sessionModel";
+import prisma from "../config/db";
 import { capitalize } from "../utils/helper";
 import speakeasy from "speakeasy";
 import { transporter } from "../config/email";
 import logger from "../utils/logger";
+import exp from "constants";
+import { CustomRequest } from "../interfaces/types";
 
 const otpStore = new Map<string, { otp: string; expiresAt: number }>();
 const tempUserStore = new Map<string, any>();
@@ -23,7 +15,7 @@ const tempUserStore = new Map<string, any>();
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { username, email, password } = req.body;
   try {
-    const existingUser = await findUserByEmail(email);
+    const existingUser = await prisma.users.findUnique({ where: { email } });
     if (existingUser) {
       logger.warn(`Registration failed: User already exists, ${email}`);
       res.status(400).json({ error: "User already exists" });
@@ -136,11 +128,14 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const user = await createUser(
-      tempUser.username,
-      tempUser.email,
-      tempUser.password
-    );
+    const hashedPassword = await bcrypt.hash(tempUser.password, 10);
+    const user = await prisma.users.create({
+      data: {
+        username: tempUser.username,
+        email: tempUser.email,
+        password_hash: hashedPassword,
+      },
+    });
 
     tempUserStore.delete(email);
     otpStore.delete(email);
@@ -158,26 +153,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   logger.info(`User login attempt: ${email}`);
 
   try {
-    const user = await findUserByEmail(email);
+    const user = await prisma.users.findUnique({ where: { email } });
     if (!user) {
       logger.warn(`Login failed: No account found with ${email}`);
       res.status(400).json({ error: "No account found with this email" });
       return;
     }
 
-    console.log("Stored user:", user);
-
-    if (!user.password_hash) {
-      logger.error(`User password is missing in database for ${email}`);
-      res.status(500).json({ error: "User password is missing in database" });
-      return;
-    }
-
-    const isPasswordValid = await bcrypt.compare(
-      password.trim(),
-      user.password_hash
-    );
-
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
       logger.warn(`Login failed: Incorrect password for ${email}`);
       res.status(400).json({ error: "Incorrect password" });
@@ -199,7 +182,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         { expiresIn: "7d" }
       );
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      await createSession(user.id, sessionToken, expiresAt);
+      await prisma.sessions.create({
+        data: {
+          user_id: user.id,
+          session_token: sessionToken,
+          expires_at: expiresAt,
+        },
+      });
 
       res.cookie("session_token", sessionToken, {
         httpOnly: true,
@@ -214,16 +203,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.json({ message: `Welcome, ${capitalize(user.username)}!`, token });
   } catch (error) {
     logger.error(`Login failed: ${error}`);
-    res
-      .status(500)
-      .json({ error: "Internal server error. Please try again later." });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
   const sessionToken = req.cookies.session_token;
   if (sessionToken) {
-    await deleteSession(sessionToken);
+    await prisma.sessions.delete({ where: { session_token: sessionToken } });
     res.clearCookie("session_token");
   }
   logger.info("User logged out successfully");
@@ -244,7 +231,7 @@ export const getCurrentUser = async (
       return;
     }
 
-    const user = await findUserById(userId);
+    const user = await prisma.users.findUnique({ where: { id: userId } });
     if (!user) {
       logger.warn(`User not found with id: ${userId}`);
       res.status(404).json({ error: "User not found" });
@@ -269,7 +256,7 @@ export const getAllUsersController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const users = await getAllUsers();
+    const users = await prisma.users.findMany();
     logger.info("Fetched all users successfully");
     res.json(users);
   } catch (error: any) {

@@ -21,12 +21,14 @@ const noteSchema = yup.object({
   title: yup
     .string()
     .required('Title is required')
+    .max(60, 'Title must be less than 60 characters')
     .test('no-profanity', 'Contains inappropriate language', (value) => {
       return !profanity.exists(value || '');
     }),
   content: yup
     .string()
     .required('Content is required')
+    .max(375, 'Content must be less than 375 characters')
     .test('no-profanity', 'Contains inappropriate language', (value) => {
       return !profanity.exists(value || '');
     }),

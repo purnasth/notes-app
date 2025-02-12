@@ -1,13 +1,7 @@
-import pool from "../config/db";
+import prisma from "../config/db";
 import bcrypt from "bcryptjs";
+import { User } from "../interfaces/types";
 
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  password_hash: string;
-  created_at: Date;
-}
 
 export const createUser = async (
   username: string,
@@ -15,28 +9,35 @@ export const createUser = async (
   password: string
 ): Promise<User> => {
   const hashedPassword = await bcrypt.hash(password, 10);
-  const result = await pool.query(
-    "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *",
-    [username, email, hashedPassword]
-  );
-  return result.rows[0];
+  const user = await prisma.users.create({
+    data: {
+      username,
+      email,
+      password_hash: hashedPassword,
+    },
+  });
+  return user;
 };
 
 export const findUserByEmail = async (email: string): Promise<User | null> => {
-  const result = await pool.query("SELECT * FROM users WHERE email = $1", [
-    email,
-  ]);
-  return result.rows[0] || null;
+  const user = await prisma.users.findUnique({ where: { email } });
+  return user;
 };
 
 export const findUserById = async (id: number): Promise<User | null> => {
-  const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
-  return result.rows[0] || null;
+  const user = await prisma.users.findUnique({ where: { id } });
+  return user;
 };
 
 export const getAllUsers = async (): Promise<User[]> => {
-  const result = await pool.query(
-    "SELECT id, username, email, created_at FROM users"
-  );
-  return result.rows;
+  const users = await prisma.users.findMany({
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      created_at: true,
+      password_hash: true,
+    },
+  });
+  return users;
 };
