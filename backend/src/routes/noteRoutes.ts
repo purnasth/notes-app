@@ -199,10 +199,10 @@ router.use(authenticate);
  *           type: integer
  */
 
-router.post("/", createNote);
-router.get("/", getNotes);
-router.put("/:id", updateNote);
-router.delete("/:id", deleteNote);
+router.post("/", authenticate, createNote);
+router.get("/", authenticate, getNotes);
+router.put("/:id", authenticate, updateNote);
+router.delete("/:id", authenticate, deleteNote);
 router.patch("/:id/pin", togglePin);
 
 export default router;
