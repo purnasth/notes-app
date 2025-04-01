@@ -101,19 +101,20 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, notes }) => {
             <hr />
             <p>
               <strong className="font-semibold">{notes.length}</strong>
-              {notes.length === 1 ? ' note' : ' notes'} created so far about{' '}
+              {notes.length <= 1 ? ' note' : ' notes'} created so far about{' '}
               <strong className="font-semibold">
                 {Object.keys(categoryCounts).length}
               </strong>{' '}
-              {/* categories. */}
-              {notes.length === 1 ? 'category' : 'categories'}.
+              {notes.length <= 1 ? 'category' : 'categories'}.
             </p>
           </div>
           <div className="w-full max-w-xl 2xl:max-w-3xl">
             <Pie data={chartData} />
-            <p className="mt-8 text-center text-sm">
-              fig. Pie chart showing the distribution of notes per category.
-            </p>
+            {Object.keys(categoryCounts).length > 0 && (
+              <p className="mt-8 text-center text-sm">
+                fig. Pie chart showing the distribution of notes per category.
+              </p>
+            )}
           </div>
         </div>
 

@@ -895,3 +895,191 @@ Example log message:
 ```
 
 ---
+
+## Upgrade to Prisma from PostgreSQL
+
+- **Purpose:** Migrate the database connection and queries to Prisma for a more efficient and type-safe approach.
+
+1. Install Prisma:
+```bash
+pnpm add prisma @prisma/client
+pnpm install prisma --save-dev
+```
+
+2. Initialize Prisma:
+```bash
+pnpm prisma init
+```
+
+3. Configure Prisma Schema:
+```prisma
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  username      String   @unique
+  email         String   @unique
+  password_hash String
+  created_at    DateTime @default(now())
+  sessions      Session[]
+  notes         Note[]
+}
+
+model Session {
+  id            Int      @id @default(autoincrement())
+  user_id       Int
+  user          User     @relation(fields: [user_id], references: [id])
+  session_token String   @unique
+  expires_at    DateTime
+  created_at    DateTime @default(now())
+}
+
+model Note {
+  id          Int        @id @default(autoincrement())
+  title       String
+  content     String
+  categories  String[]
+  created_at  DateTime   @default(now())
+  modified_at DateTime   @default(now())
+  is_pinned   Boolean    @default(false)
+  user_id     Int
+  user        User       @relation(fields: [user_id], references: [id])
+}
+```
+
+4. Update `.env` file:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/notes_app"
+```
+
+5. Create & Apply Migrations:
+```bash
+pnpm prisma migrate dev --name init
+```
+
+6. Upate `db.ts` to use Prisma Client:
+```typescript
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export default prisma;
+```
+
+7. Update Controllers, Models, and Routes to use Prisma Client.
+
+```typescript
+// Example: // src/controllers/noteController.ts
+
+import prisma from '../config/db';
+
+export const getNotes = async (req, res) => {
+  try {
+    const notes = await prisma.notes.findMany();
+    res.json(notes);
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+```
+
+8. Test the API Endpoints to ensure the migration was successful.
+
+---
+
+5. `NOTE`: For existing database, Pull your existing database schema into Prisma
+
+```bash
+pnpm prisma db pull
+```
+
+This command will: Fetch the existing database schema and generate Prisma Client.
+
+Generate `schema.prisma` file with your current schema.
+
+`// prisma/schema.prisma`, you will see the schema generated from your existing database.
+```bash
+model User {
+  id         Int     @id @default(autoincrement())
+  username   String  @unique
+  email      String  @unique
+  password   String
+  createdAt  DateTime @default(now())
+  sessions   Session[]
+  notes      Note[]
+}
+
+model Session {
+  id          Int    @id @default(autoincrement())
+  userId      Int
+  sessionToken String @unique
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id          Int    @id @default(autoincrement())
+  title       String
+  content     String
+  categories  String[]
+  createdAt   DateTime @default(now())
+  modifiedAt  DateTime @default(now())
+  isPinned    Boolean @default(false)
+  userId      Int
+
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+```
+
+6. Generate Prisma Client
+
+```bash
+pnpm prisma generate
+```
+
+7. Start using `Migration` (for future changes)
+Now, whenever you want to modify the database structure (add columns, tables, etc.), don't edit manually—instead, use Prisma migrations.
+
+For example, to add a new is_admin column in the users table:
+
+  1. Modify `schema.prisma`:
+  ```bash
+  model User {
+id            Int        @id @default(autoincrement())
+  username      String     @unique @db.VarChar(50)
+  email         String     @unique @db.VarChar(100)
+  password_hash String     @db.VarChar(255)
+  created_at    DateTime?  @default(now()) @db.Timestamp(6)
+  notes         notes[]
+  sessions      sessions[]
+  is_admin      Boolean    @default(false) // New column
+}
+  ```
+
+  2. Create a new migration:
+  ```bash
+  pnpm prisma migrate dev --name add-is-admin
+  ```
+
+  - This will a. Genreate an SQL migration file in the `prisma/migrations` directory and b. Apply the changes to the database.
+
+5. How to Track Migrations?
+After running `migration`, Prisma will store them in: 
+
+```bash
+prisma/migrations
+```
+
+
+---

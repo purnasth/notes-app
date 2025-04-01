@@ -20,14 +20,12 @@ import axios from 'axios';
 import VerifyOTP from './pages/VerifyOTP';
 
 const PublicRoute = () => {
-  const isAuthenticated = !!localStorage.getItem('token'); // Check if user is logged in
-
+  const isAuthenticated = !!localStorage.getItem('token');
   return isAuthenticated ? <Navigate to="/" replace /> : <Outlet />;
 };
 
 const ProtectedRoute = () => {
-  const isAuthenticated = !!localStorage.getItem('token'); // Check if user is logged in
-
+  const isAuthenticated = !!localStorage.getItem('token');
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
@@ -50,6 +48,8 @@ const App: React.FC = () => {
 
   // Fetch notes whenever search, categories, sort, or page changes
   useEffect(() => {
+    if (!user) return; // Fetch notes only if the user is authenticated
+
     const fetchNotes = async () => {
       try {
         const data = await getNotes(
@@ -67,15 +67,19 @@ const App: React.FC = () => {
       }
     };
     fetchNotes();
-  }, [search, categories, sortBy, sortOrder, page, limit]);
+  }, [user, search, categories, sortBy, sortOrder, page, limit]);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
+      const token = localStorage.getItem('token'); // Check if token exists
+      if (!token) return; // Don't make the API call if user is not logged in
+
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/auth/me`,
           {
             withCredentials: true,
+            headers: { Authorization: `Bearer ${token}` }, // Ensure token is sent
           },
         );
         setUser(response.data);
