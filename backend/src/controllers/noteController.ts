@@ -1,6 +1,6 @@
 import express from "express";
-import prisma from "../config/db"; // Import Prisma client
-import { Request, Response, NextFunction } from "express";
+import prisma from "../config/db";
+import { Request, Response } from "express";
 import logger from "../utils/logger";
 import { CustomRequest } from "../interfaces/types";
 import { NoteModel } from "../models/noteModel";
@@ -8,7 +8,6 @@ import { NoteModel } from "../models/noteModel";
 export const createNote: express.RequestHandler = async (
   req: Request,
   res: Response,
-  next: NextFunction
 ): Promise<void> => {
   try {
     const { title, content, categories } = req.body;
@@ -39,7 +38,6 @@ export const createNote: express.RequestHandler = async (
 export const getNotes: express.RequestHandler = async (
   req: CustomRequest,
   res: Response,
-  next: NextFunction
 ): Promise<void> => {
   try {
     const userId = req.userId;
@@ -81,7 +79,6 @@ export const getNotes: express.RequestHandler = async (
 export const updateNote: express.RequestHandler = async (
   req: Request,
   res: Response,
-  next: NextFunction
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -108,7 +105,6 @@ export const updateNote: express.RequestHandler = async (
 export const deleteNote: express.RequestHandler = async (
   req: Request,
   res: Response,
-  next: NextFunction
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -131,7 +127,6 @@ export const deleteNote: express.RequestHandler = async (
 export const togglePin: express.RequestHandler = async (
   req: Request,
   res: Response,
-  next: NextFunction
 ): Promise<void> => {
   try {
     const { id } = req.params;

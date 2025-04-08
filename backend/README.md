@@ -77,10 +77,15 @@ Create the folder structure:
 📂 backend/
 ├── 📂 logs/
 │   └── app.log
+├── 📂 prisma/
+│   │── 📂 migration/
+│   │    ├── migration_lock.toml 
+│   │── schema.prisma
 ├── 📂 src/
 │   │── 📂 config/
 │   │    ├── db.ts 
-│   │    └── email.ts 
+│   │    ├── email.ts 
+│   │    └── swagger.ts 
 │   │── 📂 controllers/
 │   │    ├── authController.ts
 │   │    └── noteController.ts
