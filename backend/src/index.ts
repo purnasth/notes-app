@@ -24,8 +24,6 @@ app.use(
   })
 );
 
-// app.use(cors());
-// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
@@ -41,7 +39,7 @@ app.use("/api/notes", noteRoutes);
 // After all routes
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT ?? 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

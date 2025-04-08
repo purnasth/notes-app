@@ -37,6 +37,7 @@ const NotesCard = ({
       <div className="overflow-hidden p-2">
         <div
           className="group relative origin-center space-y-6 rounded-xl border bg-white p-8 shadow-sm transition-all duration-300 ease-linear"
+          aria-hidden="true"
           onClick={onClick}
         >
           <div className="space-y-1">
@@ -51,9 +52,9 @@ const NotesCard = ({
           <div>
             {categories && (
               <div className="flex flex-wrap items-center gap-2">
-                {categories.map((tag, index) => (
+                {categories.map((tag) => (
                   <span
-                    key={index}
+                    key={tag}
                     className="rounded-full border border-amber-200 bg-amber-50 px-1 text-sm font-normal text-amber-500"
                   >
                     #{tag}

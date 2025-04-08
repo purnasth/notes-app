@@ -28,12 +28,14 @@ const Modal = ({ onClose, children }: ModalProps) => {
       className={`transition-700 fixed inset-0 z-50 flex size-full items-center justify-center bg-dark/70 backdrop-blur ${
         showModal ? 'opacity-100' : 'opacity-0'
       }`}
+      aria-hidden="true"
       onClick={closeWithAnimation}
     >
       <div
         className={`transition-700 relative w-[90%] max-w-xl transform bg-white p-6 shadow-lg md:w-full md:p-10 ${
           showModal ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
         }`}
+        aria-hidden="true"
         onClick={(e) => e.stopPropagation()}
       >
         <button

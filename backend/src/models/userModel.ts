@@ -2,7 +2,6 @@ import prisma from "../config/db";
 import bcrypt from "bcryptjs";
 import { User } from "../interfaces/types";
 
-
 export const createUser = async (
   username: string,
   email: string,

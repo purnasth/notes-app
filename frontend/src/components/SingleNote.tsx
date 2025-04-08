@@ -7,7 +7,6 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from './ui/Modal';
-// import { noteSchema } from '../utils/validationSchemas';
 import { NoteProps } from '../interfaces/types';
 import { Profanity } from '@2toad/profanity';
 import ConfirmModal from './ui/ConfirmModal';
@@ -147,9 +146,9 @@ const SingleNote: React.FC<SingleNoteProps> = ({
               </p>
               {categories.length > 0 && (
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  {categories.map((tag, index) => (
+                  {categories.map((tag) => (
                     <span
-                      key={index}
+                      key={tag}
                       className="rounded-full border border-amber-200 bg-amber-50 px-2 text-sm font-normal text-amber-500"
                     >
                       #{tag}
@@ -207,7 +206,7 @@ const SingleNote: React.FC<SingleNoteProps> = ({
                       field.error ? 'text-red-500' : 'text-dark'
                     }`}
                   >
-                    {field.error || field.label}
+                    {field.error ?? field.label}
                   </label>
                   {field.type === 'textarea' ? (
                     <textarea

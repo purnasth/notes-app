@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { findSessionByToken } from "../models/sessionModel";
-import logger from "../utils/logger"; // Import logger
+import logger from "../utils/logger";
 
 interface AuthenticatedRequest extends Request {
   userId?: number;

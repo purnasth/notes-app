@@ -5,10 +5,6 @@ import { NoteProps } from '../interfaces/types';
 import { getFirstName, getFullName, getInitials } from '../utils/helper';
 import moment from 'moment';
 import Header from '../layouts/Header';
-// import human1 from '../assets/svg/human-1.svg';
-// import human2 from '../assets/svg/human-2.svg';
-// import { Link } from 'react-router-dom';
-// import { TbBrandGithub } from 'react-icons/tb';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -94,7 +90,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, notes }) => {
               </p>
               <p>
                 <strong>Joined:</strong>{' '}
-                {/* {new Date(user.created_at).toLocaleDateString()} */}
                 {moment(user.created_at).format('MMM DD, YYYY')}
               </p>
             </div>

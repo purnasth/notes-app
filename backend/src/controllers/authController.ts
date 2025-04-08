@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import prisma from "../config/db";
@@ -6,8 +6,6 @@ import { capitalize } from "../utils/helper";
 import speakeasy from "speakeasy";
 import { transporter } from "../config/email";
 import logger from "../utils/logger";
-import exp from "constants";
-import { CustomRequest } from "../interfaces/types";
 
 const otpStore = new Map<string, { otp: string; expiresAt: number }>();
 const tempUserStore = new Map<string, any>();

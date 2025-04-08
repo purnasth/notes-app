@@ -4,7 +4,6 @@ import { RiPenNibLine } from 'react-icons/ri';
 
 import { IoBulbOutline } from 'react-icons/io5';
 
-// import addTask from '../assets/svg/add-task.svg';
 import human1 from '../assets/svg/human-1.svg';
 import human2 from '../assets/svg/human-2.svg';
 import Header from '../layouts/Header';

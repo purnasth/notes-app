@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { TbMenu2, TbSortDescending2, TbCategory2 } from 'react-icons/tb';
 import logo from '../assets/logo.svg';
 import { IoMdClose } from 'react-icons/io';
 import { getInitials } from '../utils/helper';
@@ -8,7 +7,13 @@ import SearchBar from '../components/ui/SearchBar';
 import { handleLogout } from '../utils/api';
 import { GrPowerReset } from 'react-icons/gr';
 import ConfirmModal from '../components/ui/ConfirmModal';
-import { TbUserSquareRounded , TbLogout} from 'react-icons/tb';
+import {
+  TbUserSquareRounded,
+  TbLogout,
+  TbMenu2,
+  TbSortDescending2,
+  TbCategory2,
+} from 'react-icons/tb';
 
 interface NavbarProps {
   value: string;
@@ -59,7 +64,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
   useEffect(() => {
     setIsNavOpen(false);
-  }, [location]);
+  }, [location, setIsNavOpen]);
 
   useEffect(() => {
     document.body.style.overflow = isNavOpen ? 'hidden' : 'auto';
@@ -126,8 +131,7 @@ const Navbar: React.FC<NavbarProps> = ({
             href="/"
             className="flex items-center gap-2 text-xl font-semibold text-dark md:text-2xl"
           >
-            <img src={logo} alt="Logo" className="size-10 object-contain" />
-            Notes App
+            <img src={logo} alt="Logo" className="size-10 object-contain" />Notes App
           </a>
 
           <div className="flex items-center justify-end gap-2">
@@ -152,7 +156,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
               <div className="user-profile rounded-full border border-amber-100">
                 <span className="transition-300 flex size-10 scale-[0.95] items-center justify-center rounded-full border border-amber-100 bg-amber-100 p-2 text-xl font-bold text-amber-500 shadow group-hover:scale-100">
-                  {getInitials(user?.username || 'Guest')}
+                  {getInitials(user?.username ?? 'Guest')}
                 </span>
               </div>
             </button>
@@ -165,6 +169,7 @@ const Navbar: React.FC<NavbarProps> = ({
           className={`transition-700 fixed inset-0 z-30 backdrop-blur ${
             isNavOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
+          aria-hidden="true"
           onClick={toggleNav}
         />
 
@@ -307,12 +312,12 @@ const Navbar: React.FC<NavbarProps> = ({
             <div className="user-profile flex items-center gap-3 rounded-xl border bg-amber-100 p-2">
               <Link to="/profile" className="flex items-center gap-2 text-dark">
                 <span className="transition-300 flex size-16 scale-[0.85] items-center justify-center rounded-full border border-amber-500 bg-amber-400 p-2 text-2xl font-bold text-dark/80 outline outline-1 outline-offset-4 outline-amber-500 group-hover:scale-100">
-                  {getInitials(user?.username || 'Guest')}
+                  {getInitials(user?.username ?? 'Guest')}
                 </span>
               </Link>
               <div className="space-y-1 text-dark">
                 <h3 className="text-base capitalize">
-                  {user?.username || 'Guest'}
+                  {user?.username ?? 'Guest'}
                 </h3>
                 <div className="flex items-center gap-2">
                   <Link

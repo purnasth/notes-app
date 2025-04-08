@@ -50,7 +50,7 @@ const Pagination: React.FC<PaginationProps> = ({
     return pageNumbers.map((pageNumber, index) =>
       typeof pageNumber === 'number' ? (
         <button
-          key={index}
+          key={typeof pageNumber === 'number' ? pageNumber : `dots-${index}`}
           type="button"
           aria-label={`Go to page ${pageNumber}`}
           onClick={() => onPageChange(pageNumber)}
@@ -62,10 +62,9 @@ const Pagination: React.FC<PaginationProps> = ({
         </button>
       ) : (
         <span
-          key={index}
+          key={`dots-${pageNumber}-${index}`}
           className="flex size-10 items-center justify-center text-center text-2xl font-medium text-dark"
         >
-          {/* {pageNumber} */}
           <TbDots />
         </span>
       ),
